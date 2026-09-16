@@ -64,6 +64,11 @@
       "description": "Build apps, scripts, and automations with the TypeScript SDK."
     },
     {
+      "name": "origin-apps",
+      "source": "origin-apps",
+      "description": "Plan the port of an existing GitHub App to a Cursor Origin App: discover its GitHub surface, map it onto the live Origin API, write a porting brief."
+    },
+    {
       "name": "orchestrate",
       "source": "orchestrate",
       "description": "Fan large tasks out across parallel cloud agents with planners, workers, verifiers, and structured handoffs."

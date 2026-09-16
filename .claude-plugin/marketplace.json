@@ -1,0 +1,14 @@
+{
+  "name": "cursor-plugins",
+  "owner": {
+    "name": "Cursor",
+    "email": "plugins@cursor.com"
+  },
+  "plugins": [
+    {
+      "name": "origin-apps",
+      "source": "./origin-apps",
+      "description": "Plan the port of an existing GitHub App to a Cursor Origin App: discover its GitHub surface, map it onto the live Origin API, write a porting brief."
+    }
+  ]
+}
