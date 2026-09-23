@@ -1,6 +1,6 @@
 {
   "name": "origin-apps",
-  "description": "Plan the port of an existing GitHub App to a Cursor Origin App: discover the app's GitHub surface, map it onto the live Origin API, write a porting brief.",
+  "description": "Build on the Cursor Origin API: fetch the live spec first, then apply durable practices for credentials, scopes, webhooks, paging, and errors; includes a skill that plans the port of an existing GitHub App.",
   "version": "0.1.0",
   "author": {
     "name": "Cursor",
@@ -12,8 +12,9 @@
   "keywords": [
     "origin",
     "origin-api",
-    "github-app",
+    "origin-app",
     "webhooks",
+    "github-app",
     "integration",
     "porting"
   ],

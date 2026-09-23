@@ -23,40 +23,31 @@ you. The team keeps its language, framework, and client strategy; the brief
 tells them what maps, what changes shape, what is absent on purpose, and what
 is worth raising with Cursor.
 
-Three rules shape everything below:
+Fundamentals come from the `origin-api` skill in this plugin: which docs to
+fetch, credentials and token minting, scopes, webhook verification and
+idempotency, pagination, TypeIDs, errors, rate limits, and the list of
+deliberate departures from GitHub. Follow it first; this skill adds only what
+a port needs on top. Two rules shape the porting work:
 
-1. **The live Origin docs are the source of truth.** Fetch them at run time
-   and derive every mapping from them. Nothing in this skill pins a version or
-   enumerates endpoints; the `references/` files explain *how to read* the spec
-   and *why* Origin differs, and any concrete example in them is illustrative
-   until you have confirmed it against today's spec.
-2. **Discover, do not ask.** Read the manifest, permission declarations, event
+1. **Discover, do not ask.** Read the manifest, permission declarations, event
    handlers, token minting, API calls, and webhook receiver out of the code.
    Never ask anyone to paste a manifest or list their endpoints. If something
    is genuinely undiscoverable, record it as an open question in the brief.
-3. **Origin is GitHub-shaped, not GitHub-compatible.** Many differences are
-   decisions, not omissions. Classify them as such and guide the port toward
-   the Origin idiom instead of reproducing the GitHub one.
+2. **Classify departures as decisions, not omissions.** A GitHub feature that
+   Origin deliberately does not reproduce is `by-design-absent` with a pointer
+   to the Origin idiom, never a gap card. Nothing in this skill pins a spec
+   version or enumerates endpoints; every concrete example in `references/`
+   is illustrative until confirmed against today's spec.
 
 ## Procedure
 
 ### 1. Load the live Origin surface
 
-Fetch, in this order, and keep them open for the rest of the run:
-
-- `https://cursor.com/docs/api/origin/llms.txt` (index of everything below)
-- `https://cursor.com/docs/api/origin/openapi.yaml` (the contract; every
-  mapping in the brief cites an `operationId` or a payload schema from it)
-- `https://cursor.com/docs/api/origin/llms-full.txt` (the human reference:
-  installation, authentication, scopes, mirrored repositories, webhooks,
-  conventions, current limitations)
-- `https://cursor.com/docs/api/origin/changelog` (what moved recently)
-
-Record `info.version` and the fetch time in the brief's provenance block. That
-is provenance, not a dependency: the brief describes the API as it is today and
-says so. `references/spec-mapping.md` explains the spec's `x-origin-scopes`,
-`x-origin-webhook-events`, `x-origin-webhook-resource`, and
-`x-cursor-visibility` extensions and how to build the mapping index from them.
+Fetch the four URLs from `origin-api` § Fetch the spec and keep them open for
+the run. Record `info.version` and the fetch time in the brief's provenance
+block; that is provenance, not a dependency, and the brief says so.
+`references/spec-mapping.md` explains how to turn the spec's `x-origin-*`
+extensions into the mapping index every later step looks things up in.
 `scripts/index-origin-spec.py <openapi.yaml>` prints that index (operations
 with scopes, parameters, and response fields; webhook slugs with payload
 fields; the scope catalog) so you can grep it instead of paging through 700 KB
@@ -126,9 +117,10 @@ real events at all.
 
 | File | Read when |
 | --- | --- |
+| `../origin-api/SKILL.md` | Always, first: the docs to fetch and the fundamentals every mapping row assumes. |
 | `references/spec-mapping.md` | Building the spec index and matching GitHub calls, events, and payload fields to Origin operations, slugs, and schemas. |
 | `references/discovery.md` | Scanning the codebase for the app's GitHub surface. |
-| `references/origin-isms.md` | Deciding whether a missing GitHub feature is a decision or a gap, and what the Origin idiom is. |
+| `references/origin-isms.md` | Deciding whether a missing GitHub feature is a decision or a gap, and what the Origin idiom is, with the reasoning a team that only knows GitHub needs. |
 | `references/gap-bar.md` | Deciding whether a gap is worth raising with Cursor, and writing the card. |
 | `references/brief-template.md` | Writing the output. |
 | `scripts/index-origin-spec.py` | Turning the fetched `openapi.yaml` into a grep-friendly index (operations, webhook families, scopes, one component). Optional; needs PyYAML. |

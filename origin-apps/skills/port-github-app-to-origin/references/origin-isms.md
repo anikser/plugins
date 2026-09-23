@@ -7,7 +7,8 @@ the brief, and the brief's job is to point the team at the Origin idiom. Each
 entry gives the departure, the idiom, and the reason in one line, so you can
 explain it to a team that has only ever seen GitHub. Confirm the current
 wording in `llms-full.txt`; this file explains intent, the docs state the
-contract.
+contract. The `origin-api` skill carries the same conventions as practices
+for building; this file carries them as parity decisions for a port.
 
 ## Which repositories an app can act on
 
