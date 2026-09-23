@@ -8,27 +8,23 @@ in Cursor, Claude Code, Codex, and any agent that reads
 
 ## What it includes
 
-- `origin-api`: the general skill. Points the agent at the live docs and
-  OpenAPI spec first (the only source for endpoints, scopes, and event slugs),
-  then carries the practices that hold across spec versions: app, installation,
-  and user credentials and just-in-time token minting; minimal scopes derived
-  from `x-origin-scopes`; webhook subscription, `v1ed` signature verification,
-  idempotent handling, and delivery behavior; opaque page tokens; TypeIDs; the
-  error envelope; rate limits; and the deliberate differences from GitHub (no
-  commit statuses, Issues, or GraphQL). Use it for any Origin work.
-- `port-github-app-to-origin`: builds on `origin-api` for one job. Run it
-  inside your GitHub App's repository with no other instructions. It discovers
-  the app's GitHub surface from the code (manifest, permissions, events
-  handled, payload fields read, REST and GraphQL calls, token minting, webhook
-  receiver, calls your framework makes for you), maps it onto the live spec,
-  and writes a porting brief: a capability table, the webhook fields your
-  handlers read and where each comes from on Origin, the scopes to request, a
-  hello-world path to your first real event, gaps worth raising with Cursor,
-  and the questions your team should settle first. It plans; it does not write
-  port code, pick a language or SDK, or estimate in time.
+- `origin-api`: the general skill. Fetch-first sources (the live OpenAPI spec
+  and docs are the only source for endpoints, scopes, and event slugs) plus a
+  checklist of the Origin gotchas GitHub instinct gets wrong: native vs
+  mirrored repositories, opt-in webhook events, `v1ed` signatures, `deliveryId`
+  idempotency, lean payloads, credential kinds and token minting, scopes from
+  `x-origin-scopes`, opaque page tokens, TypeIDs, `404` semantics, rate
+  limits, and the deliberate differences from GitHub. Use it for any Origin
+  work.
+- `port-github-app-to-origin`: builds on `origin-api`. Run it inside your
+  GitHub App's repository. It discovers the app's GitHub surface from the code,
+  maps it onto the live spec, and writes a porting brief: capability table,
+  webhook fields your handlers read and where each comes from on Origin,
+  scopes to request, hello-world path, gaps worth raising with Cursor, and the
+  questions to settle first. It plans; it writes no code and estimates no
+  time.
 
-Both skills fetch the spec at run time and refuse to name an endpoint from
-memory, so their output tracks the API as published on the day you run them.
+Both fetch the spec at run time and never name an endpoint from memory.
 
 ## When to use
 
