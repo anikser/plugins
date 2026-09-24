@@ -12,7 +12,7 @@ reads [Agent Skills](https://agentskills.io).
 spec and docs for every fact, gives a table of which docs section answers
 which question, and names the four rules to check first (native versus
 mirrored repositories, event subscriptions, webhook verification, scopes
-from the spec) plus the GitHub features Origin does not have. Use it for any
+from the spec) plus how GitHub features map onto Origin. Use it for any
 Origin work.
 
 `port-github-app-to-origin` builds on `origin-api`. Run it inside your GitHub
@@ -34,8 +34,8 @@ Both skills fetch the spec at run time and never name an endpoint from memory.
 - Holding a GitHub App (Probot, Octokit, go-github, hand-rolled) and wanting
   to know what an Origin App version looks like before starting:
   `port-github-app-to-origin`.
-- Checking which GitHub features Origin deliberately does not reproduce, and
-  what to do instead: either skill.
+- Checking which GitHub features map differently on Origin, and what to use
+  instead: either skill.
 
 In Cursor, ask about the Origin API or ask to port the app, or run
 `/origin-api` or `/port-github-app-to-origin`.

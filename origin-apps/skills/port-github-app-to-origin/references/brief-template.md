@@ -19,7 +19,7 @@ card per gap. The team will argue over it in one sitting.
 | `same` | Same capability, same shape. A path or field rename at most. |
 | `reshaped` | Same capability, different shape (pagination, identifier form, event granularity, key semantics). The code changes, the behavior does not. |
 | `workaround` | Same outcome by a different route (follow-up read, client-side filter, marker). The Tradeoff column is mandatory. |
-| `by-design-absent` | Origin deliberately does not reproduce it (`origin-isms.md`). Names the idiom or "no equivalent; decision needed". |
+| `not-available` | Nothing in the current spec covers it (`origin-isms.md` or `#current-limitations`). Names the closest idiom and has a question in § 7; eligible for a card. |
 | `gap` | No workaround, or one that fails `gap-bar.md`. Has a card in § 6. |
 | `unknown` | Discovery or the spec could not answer. Has a question in § 7. |
 | `preview` (suffix) | The row touches an element badged `x-cursor-visibility: PREVIEW` (`llms-full.txt#preview`). |
@@ -87,7 +87,8 @@ dependency makes on the app's behalf, marked as such.
 
 The Origin column names an `operationId`, a slug, a `llms-full.txt` anchor,
 or `none`. `workaround` rows fill Tradeoff. `gap` rows link their card.
-`by-design-absent` rows name the idiom. `unknown` rows name their question.
+`not-available` rows name the closest idiom and their question. `unknown`
+rows name their question.
 
 **Scopes to request:** the union of `x-origin-scopes.scopes` across every
 Origin operation above that an installation token can call, minus ambient

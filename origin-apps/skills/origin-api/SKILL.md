@@ -72,5 +72,5 @@ week.
 
 ## Coming from GitHub
 
-GitHub habits do not carry over. The `port-github-app-to-origin` skill in
-this plugin covers the differences.
+Several GitHub conventions map differently on Origin. The
+`port-github-app-to-origin` skill in this plugin covers the differences.

@@ -23,9 +23,9 @@ At least one must hold. Quote it on the card.
 | Customer-visible behavior | The workaround changes what the team's users see or can do, not how the code is organized. |
 | Load-bearing | The capability sits on the hello-world path or the team's stated core flow. |
 
-## Never a gap
+## Not a gap
 
-- Anything in `origin-isms.md`.
+- Anything `origin-isms.md` labels `reshaped`.
 - A field or filter the code does not use.
 - A GitHub convenience (`Link` pagination, numeric IDs, `html_url`) where the
   Origin convention is a mechanical substitution.
@@ -70,6 +70,6 @@ can act without a call.
 Do not propose scope, field, or route names. Do not batch unrelated
 capabilities. Do not send cards yourself. The team decides what goes out,
 through whatever contact route they have with Cursor, quoting the spec
-version and any request ID from failed calls (`llms-full.txt#errors`). "This
-is by design, here is the idiom" is a fine answer. It goes back into the
-brief as `by-design-absent`.
+version and any request ID from failed calls (`llms-full.txt#errors`). "Not
+planned" or "here is the idiom" is a fine answer. Record it in the brief with
+the label it earns.

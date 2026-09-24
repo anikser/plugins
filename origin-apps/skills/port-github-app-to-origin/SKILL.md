@@ -17,19 +17,19 @@ compatibility: >-
 
 Run inside the GitHub App's codebase. The output is a porting brief
 (`references/brief-template.md`), not an implementation. It says what maps,
-what changes shape, what is absent on purpose, and what is worth raising with
-Cursor.
+what changes shape, what is not available today, and what is worth raising
+with Cursor.
 
 The `origin-api` skill in this plugin covers which docs to fetch, credentials,
-scopes, webhooks, paging, IDs, errors, and the deliberate differences from
-GitHub. Follow it first. Nothing here repeats it. Two rules on top:
+scopes, webhooks, paging, IDs, and errors. Follow it first. Nothing here repeats it. Two rules on top:
 
 1. **Discover, do not ask.** Read permissions, events, handlers, calls, token
    minting, and the receiver out of the code. Never ask for a manifest or an
    endpoint list. Anything you cannot find becomes an open question.
-2. **Departures are decisions, not omissions.** Anything in
-   `references/origin-isms.md` is `by-design-absent` or `reshaped`, with a
-   pointer to the idiom. It never becomes a gap card.
+2. **Check the documented path first.** Anything in
+   `references/origin-isms.md` has a documented Origin path or a documented
+   limitation. Use the row's label; `not-available` rows still go through
+   the gap bar.
 
 ## Procedure
 
@@ -70,7 +70,8 @@ GitHub. Follow it first. Nothing here repeats it. Two rules on top:
    - [ ] Every `gap` row has a card, and the card quotes one of the five
          tradeoff tests in `gap-bar.md`.
    - [ ] Every `unknown` row has a question in § 7.
-   - [ ] No `origin-isms.md` row is labeled `gap`.
+   - [ ] No row `origin-isms.md` labels `reshaped` is labeled `gap`; every
+         `not-available` row has a question.
    - [ ] Every event the code handles has a § 4 row for each payload field
          it reads, including log-only fields.
    - [ ] Calls the framework makes on the app's behalf appear as rows.
