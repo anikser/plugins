@@ -1,11 +1,11 @@
-# Origin-isms: GitHub surfaces Origin departs from on purpose
+# Origin-isms: GitHub features Origin departs from on purpose
 
 Check here before labeling anything `gap`. A row below is `by-design-absent`
-or `reshaped`; the brief points at the idiom and never files a card. The
-reasoning behind each lives in the `origin-api` skill; this table carries only
-what the classifier needs. Confirm current wording in `llms-full.txt`.
+or `reshaped`. The brief points at the idiom and never files a card. The
+`origin-api` skill carries the reasoning. This table carries only the label
+and the idiom. Confirm current wording in `llms-full.txt`.
 
-| GitHub surface the app uses | Label | Origin idiom |
+| GitHub call, event, or permission | Label | Origin idiom |
 | --- | --- | --- |
 | Acting on a repository mirrored *from* GitHub (writes, `push` events) | `by-design-absent` | Install on Origin-native repositories or stable outbound mirrors. Mirrors are read-only to apps and deliver no `repository.pushed`. First question of every brief. |
 | Install callback with `installation_id` + `setup_action` query params | `reshaped` | Signed installation receipt JWT; `sub` is the installation ID. Not a Bearer. |
@@ -26,12 +26,12 @@ what the classifier needs. Confirm current wording in `llms-full.txt`.
 | User, email, team, and member lookups | `by-design-absent` | Actors are TypeIDs (plus a handle where exposed). No directory. |
 | Single `pull_request` event with `action` field, `previous_attributes` | `reshaped` | One slug per action (`pull_request.head_ref.pushed`); no `action` field, no delta. Confirm each slug in `x-origin-webhook-events`. |
 | `x-github-*` headers, HMAC `x-hub-signature-256` | `reshaped` | `webhook-*` headers; `v1ed` Ed25519 over a SHA-256 digest, JWKS keys. |
-| Payload inlines: changed files on push, before-SHA, `html_url`, `sender` profile | `reshaped` | Follow-up `Get…` / `CompareCommits` / `ListComparisonFiles` with identifiers the payload carries. Name the call per field; count the fan-out. |
+| Fields GitHub inlines in payloads (changed files on push, before-SHA, `html_url`, `sender` profile) | `reshaped` | Follow-up `Get…`, `CompareCommits`, or `ListComparisonFiles` with identifiers the payload carries. Name the call for each field and count the fan-out. |
 | Default delivery of all events after app creation | `reshaped` | Only installation lifecycle is default; select the rest. |
 | Reviews keyed by `commit_id` | `reshaped` | Reviews anchor to a pull request version. |
 | Finding own check runs / comments by actor | `reshaped` | Check runs by `key`; comments and reviews by a marker the app controls. |
 | Requested-reviewer team pages, `created_via` | `by-design-absent` | Reviewers addressed by identifier only. |
 
-Not on this list, and not mentioned anywhere in the Origin docs (Marketplace
-billing, merge queues, Actions, Pages, Projects): `unknown` with a question,
-never `by-design-absent`.
+A feature that is not on this list and that the Origin docs never mention
+(Marketplace billing, merge queues, Actions, Pages, Projects) is `unknown`
+with a question, never `by-design-absent`.

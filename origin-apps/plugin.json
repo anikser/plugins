@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "origin-apps",
   "version": "0.1.0",
-  "description": "Build on the Cursor Origin API: fetch the live spec first, then apply durable practices for credentials, scopes, webhooks, paging, and errors; includes a skill that plans the port of an existing GitHub App.",
+  "description": "Skills for building on the Cursor Origin API. Fetch the live spec first, then follow the Origin rules for credentials, scopes, webhooks, paging, and errors. Includes a skill that plans the port of an existing GitHub App.",
   "author": {
     "name": "Cursor",
     "email": "plugins@cursor.com"

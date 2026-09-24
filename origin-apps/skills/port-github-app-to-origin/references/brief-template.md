@@ -1,11 +1,11 @@
 # Porting brief template
 
-One Markdown file at the repository root (`ORIGIN-PORTING-BRIEF.md` unless the
-team's docs convention says otherwise); print its path. Fill every section; an
-empty section says so in one line rather than disappearing. Cite spec
-`operationId`s and `llms-full.txt` anchors; cite the team's code by
-`file:line`. A table row per capability, a line per follow-up field, a card
-per gap; the team will argue over it in one sitting.
+Write one Markdown file at the repository root (`ORIGIN-PORTING-BRIEF.md`
+unless the team's docs convention says otherwise) and print its path. Fill
+every section. An empty section says so in one line rather than disappearing.
+Cite spec `operationId`s and `llms-full.txt` anchors. Cite the team's code by
+`file:line`. One table row per capability, one line per follow-up field, one
+card per gap. The team will argue over it in one sitting.
 
 ## Labels
 
@@ -13,29 +13,30 @@ per gap; the team will argue over it in one sitting.
 
 | Label | Meaning |
 | --- | --- |
-| `same` | Same capability, same shape; a path or field rename at most. |
-| `reshaped` | Same capability, different shape (pagination, identifier form, event granularity, key semantics). Code changes, behavior does not. |
-| `workaround` | Same outcome by a different route (follow-up read, client-side filter, marker). Tradeoff column mandatory. |
+| `same` | Same capability, same shape. A path or field rename at most. |
+| `reshaped` | Same capability, different shape (pagination, identifier form, event granularity, key semantics). The code changes, the behavior does not. |
+| `workaround` | Same outcome by a different route (follow-up read, client-side filter, marker). The Tradeoff column is mandatory. |
 | `by-design-absent` | Origin deliberately does not reproduce it (`origin-isms.md`). Names the idiom or "no equivalent; decision needed". |
 | `gap` | No workaround, or one that fails `gap-bar.md`. Has a card in § 6. |
 | `unknown` | Discovery or the spec could not answer. Has a question in § 7. |
-| `preview` (suffix) | Origin operation is `x-cursor-visibility: PREVIEW`. Usable; shape may move. |
+| `preview` (suffix) | The Origin operation is `x-cursor-visibility: PREVIEW`. Usable. The shape may move. |
 
 **Size** (kind of change, never time)
 
 | Size | Meaning |
 | --- | --- |
-| S | Adapter or client layer: path, header, identifier, or pagination rewrite; re-keyed lookup. |
-| M | New code path: a follow-up read where the payload sufficed, a handshake step, a new handler, a data-model change for a new identifier or version concept. |
-| L | Product or architecture change: a flow that depended on user OAuth, a customer-visible behavior, a dependency on native repositories, an open gap card. |
+| S | Adapter or client layer. A path, header, identifier, or pagination rewrite, or a re-keyed lookup. |
+| M | A new code path. A follow-up read where the payload used to suffice, a handshake step, a new handler, a data-model change for a new identifier or version concept. |
+| L | A product or architecture change. A flow that depended on user OAuth, a customer-visible behavior, a dependency on native repositories, an open gap card. |
 
 ## Template
 
 ```markdown
-# Origin porting brief — <app name>
+# Origin porting brief for <app name>
 
-Planning document. Maps this GitHub App's surface onto the Cursor Origin API
-as published on <date>. No decisions about language, framework, or client.
+Planning document. Maps what this GitHub App uses from GitHub onto the Cursor
+Origin API as published on <date>. It makes no decisions about language,
+framework, or client.
 
 ## Provenance
 
@@ -43,12 +44,12 @@ as published on <date>. No decisions about language, framework, or client.
 - Docs read: <the URLs>
 - Codebase: `<repo>` at `<commit>`
 - Re-check `workaround` and `gap` rows against the changelog before work
-  starts; they move most.
+  starts. They are the rows most likely to have moved.
 
 ## 1. What the app is today
 
-One paragraph: what it does for its users, which events drive it, what it
-writes back. Then:
+One paragraph on what it does for its users, which events drive it, and what
+it writes back. Then:
 
 | Facet | Finding | Evidence |
 | --- | --- | --- |
@@ -65,9 +66,9 @@ writes back. Then:
 ## 2. First decision: which repositories
 
 <What the code assumes about the repositories it acts on.> Apps have full
-scopes only on Origin-native repositories and stable outbound mirrors;
-repositories mirrored from GitHub are read-only to apps and deliver no push
-events. **Question 1 must be answered before § 5 is attempted.**
+scopes only on Origin-native repositories and stable outbound mirrors.
+Repositories mirrored from GitHub are read-only to apps and deliver no push
+events. **Answer question 1 before attempting § 5.**
 
 ## 3. Capability table
 
@@ -79,16 +80,16 @@ dependency makes on the app's behalf, marked as such.
 
 | GitHub thing (evidence) | Origin equivalent | Parity | Size | Tradeoff | Open question |
 | --- | --- | --- | --- | --- | --- |
-| `GET /repos/{o}/{r}/pulls/{n}` (`src/x.ts:12`) | `<operationId>` | same | S | — | — |
+| `GET /repos/{o}/{r}/pulls/{n}` (`src/x.ts:12`) | `<operationId>` | same | S | none | none |
 
 The Origin column names an `operationId`, a slug, a `llms-full.txt` anchor,
-or `none`. `workaround` rows fill Tradeoff; `gap` rows link their card;
-`by-design-absent` rows name the idiom; `unknown` rows name their question.
+or `none`. `workaround` rows fill Tradeoff. `gap` rows link their card.
+`by-design-absent` rows name the idiom. `unknown` rows name their question.
 
 **Scopes to request:** the union of `x-origin-scopes.scopes` across every
 Origin operation above that an installation token can call, minus ambient
-and implied scopes (`write` implies `read`; `repository:metadata:read` is
-automatic). This is what the install URL's `scope` parameter carries.
+and implied scopes (`write` implies `read`, and `repository:metadata:read` is
+automatic). The install URL's `scope` parameter carries this list.
 
 ## 4. Webhook payload fields the code reads
 
@@ -97,39 +98,41 @@ automatic). This is what the install URL's `scope` parameter carries.
 | `pull_request.synchronize` → `<slug>` | `pull_request.head.sha` | present | `payload.pullRequest.head.sha` |
 | `push` → `<slug>` | `commits[].added` | follow-up read | `<operationId>`, one call per ref update |
 
-"How" is one of: present at `<path>`; present in envelope (`event.type` for
-GitHub's `action`); follow-up read via `<operationId>` with the call count
-per event; derivable (from what; is the format documented); absent (→ § 3's
-label). Include fields read only for logging.
+"How" is one of five values. Present at `<path>`. Present in the envelope
+(`event.type` for GitHub's `action`). Follow-up read via `<operationId>`,
+with the call count per event. Derivable, saying from what and whether the
+format is documented. Absent, pointing at the row's label in § 3. Include
+fields read only for logging.
 
 ## 5. Hello-world path
 
-Shortest route to one real event from one native repository. Each step is a
-verification, linked to `llms-full.txt`; append one step per spec-silent
-behavior the brief depends on, stated as the observation to make.
+The shortest route to one real event from one native repository. Each step
+is a verification, linked to `llms-full.txt`. Append one step for each
+spec-silent behavior the brief depends on, stated as the observation to make.
 
-1. Create the app; register the Ed25519 public key; set webhook URL and
-   callback.
+1. Create the app, register the Ed25519 public key, and set the webhook URL
+   and callback.
 2. Select every repository event from § 3 in app settings.
-3. Install on an Origin-native repository; verify the receipt JWT and read
+3. Install on an Origin-native repository. Verify the receipt JWT and read
    the installation ID from `sub`.
-4. Mint an app JWT, exchange for an installation token, confirm the
-   repository is listed and its mirror state matches § 2.
+4. Mint an app JWT, exchange it for an installation token, and confirm the
+   repository is listed with the mirror state § 2 expects.
 5. Verify the ping (`v1ed` over the raw body, timestamp skew, `deliveryId`
    dedupe).
 6. Perform the smallest action in § 3 and confirm the slug and the § 4
-   fields arrive. Ping but no event: re-check steps 2 and 3 first.
+   fields arrive. If the ping arrived and this did not, re-check steps 2 and
+   3 first.
 7. Smallest write from § 3 (check run with a stable `key`, PR comment),
    confirming its scope is in the grant.
 
 ## 6. Gaps worth raising
 
-Zero or more cards in the `gap-bar.md` shape. If zero: "No row failed the gap
-bar; the workarounds in § 3 carry their tradeoffs." Do not pad.
+Zero or more cards in the `gap-bar.md` shape. If zero, write "No row failed
+the gap bar. The workarounds in § 3 carry their tradeoffs." Do not pad.
 
 ## 7. Questions for the team
 
-Always the first three; then what discovery left open.
+Always the first three, then what discovery left open.
 
 1. Native repositories (or stable outbound mirrors), or repositories mirrored
    from GitHub? Decides whether the app receives events and can write.
@@ -139,12 +142,12 @@ Always the first three; then what discovery left open.
    Origin?
 4. Does anything key approvals or reviews by commit SHA rather than PR
    version?
-5. How do you identify your own check runs / comments / reviews today; can a
-   key or marker you control replace actor matching?
+5. How do you identify your own check runs, comments, and reviews today? Can
+   a key or marker you control replace actor matching?
 6. Do you generate clients from OpenAPI? (Read the changelog for renames.)
 
 ## 8. Out of scope
 
 No implementation, no SDK or language choice, no time estimates. The brief is
-a map; the route is the team's.
+a map. The route is the team's.
 ```
