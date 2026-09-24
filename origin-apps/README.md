@@ -31,7 +31,7 @@ Both skills fetch the spec at run time and never name an endpoint from memory.
 
 - Writing or reviewing code that calls Origin, mints installation tokens, or
   receives Origin webhooks: `origin-api`.
-- Creating an Origin App and wanting the first-week traps up front:
+- Creating an Origin App and wanting the rules to know up front:
   `origin-api`.
 - Holding a GitHub App (Probot, Octokit, go-github, hand-rolled) and wanting
   to know what an Origin App version looks like before starting:
@@ -50,11 +50,9 @@ or open Customize, find the plugin, and install it at user or project scope.
 
 ## Use outside Cursor
 
-The plugin ships three manifests for one set of skills. A root `plugin.json`
-([Agent Plugins](https://agent-plugins.org) 1.0), `.cursor-plugin/plugin.json`
-(Cursor Marketplace), and `.claude-plugin/plugin.json` (Claude Code). The
-skills use only portable frontmatter (`name`, `description`, `license`,
-`compatibility`).
+The skills use only the portable
+[Agent Skills](https://agentskills.io) frontmatter, so they work unchanged in
+other agents.
 
 Claude Code, via the marketplace manifest at this repository's root:
 
@@ -84,8 +82,8 @@ mkdir -p .cursor/skills && cp -r plugins/origin-apps/skills/* .cursor/skills/
   needs no Origin credentials. You follow the brief's hello-world path
   afterwards.
 - Optional: `python3` with PyYAML for the porting skill's
-  `scripts/index-origin-spec.py`, which turns the fetched spec into a
-  grep-friendly index. Without it the skill reads the spec directly.
+  `scripts/index-origin-spec.py`, which prints webhook payload fields with
+  their references resolved. Without it the skill reads the spec directly.
 
 ## Where the brief goes
 

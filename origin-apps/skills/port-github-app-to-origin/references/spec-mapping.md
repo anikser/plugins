@@ -14,21 +14,21 @@ table here. Build the index once. Every later step looks things up in it.
 
 ## Build the index
 
-1. **Operations**: `operationId`, method, path, `x-origin-scopes`,
-   visibility, parameter names, top-level request fields, response component.
-2. **Webhook events**: slug → schema → properties and `$ref`s (or the
-   `x-origin-webhook-resource` target). From `llms-full.txt` § Webhooks,
-   which slugs are app-lifecycle (always delivered) versus repository events
-   (must be selected).
-3. **Scopes**: the union of every `scopes` value, annotated with the
-   operations that need it. Separate installation-requestable scopes from
-   ambient and user-only ones. The user-only set tells you which GitHub flows
-   have no app-side equivalent.
-4. **Resources**: component schemas returned by `Get…`/`List…`, with field
+1. **Operations and scopes**: `rg -B1 -A4 'x-origin-scopes:' openapi.yaml`
+   prints every `operationId` with its `scopes`, `tokenTypes`, and `ambient`
+   flag. From it, note the union of scopes with the operations that need
+   each, and separate installation-requestable scopes from ambient and
+   user-only ones. The user-only set tells you which GitHub flows have no
+   app-side equivalent. Read parameters and response components from the
+   spec when a rule below asks for them.
+2. **Webhook events**: `rg -A3 'x-origin-webhook-events:' openapi.yaml` lists
+   every slug with its payload schema. `scripts/index-origin-spec.py
+   openapi.yaml` prints each payload family with its fields and `$ref`s
+   resolved two levels deep; `schema <Name>` does the same for one component.
+   From `llms-full.txt` § Webhooks, note which slugs are app-lifecycle
+   (always delivered) versus repository events (must be selected).
+3. **Resources**: component schemas returned by `Get…`/`List…`, with field
    names, for "does the Origin object carry this field".
-
-`scripts/index-origin-spec.py openapi.yaml [ops|events|scopes|schema <Name>]`
-prints all four.
 
 ## Matching
 

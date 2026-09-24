@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Print a grep-friendly index of the Origin OpenAPI spec.
+"""Print the Origin webhook payload families with their fields resolved.
 
 Usage:
-    python3 index-origin-spec.py openapi.yaml            # everything
-    python3 index-origin-spec.py openapi.yaml ops        # operations only
-    python3 index-origin-spec.py openapi.yaml events     # webhook payload families
-    python3 index-origin-spec.py openapi.yaml scopes     # scope catalog
+    python3 index-origin-spec.py openapi.yaml                  # every payload family
     python3 index-origin-spec.py openapi.yaml schema PullRequest   # one component
 
 Fetch the spec first:
     curl -sSL https://cursor.com/docs/api/origin/openapi.yaml -o openapi.yaml
+
+Operations and scopes do not need this script. Grep the spec directly:
+    rg -B1 -A4 'x-origin-scopes:' openapi.yaml
+    rg -A3 'x-origin-webhook-events:' openapi.yaml
 
 Read-only. Needs PyYAML (`pip install pyyaml`). Everything printed comes from
 the spec you pass in; nothing is pinned or embedded here.
@@ -22,12 +23,17 @@ try:
 except ImportError:  # pragma: no cover
     sys.stderr.write(
         "PyYAML is not installed. Run `pip install pyyaml`, or read the spec "
-        "directly (search for `operationId:`, `x-origin-scopes:`, and "
-        "`x-origin-webhook-events:`).\n"
+        "directly (search for `x-origin-webhook-events:` and follow the "
+        "`$ref`s by hand).\n"
     )
     sys.exit(2)
 
-METHODS = ("get", "post", "put", "patch", "delete")
+# Field descriptions are cut to one sentence and this many characters so a
+# family fits on one screen.
+DESCRIPTION_CHARS = 140
+# How many `$ref` levels to expand under a payload. Two reaches the embedded
+# resource and its direct children, which is what field mapping needs.
+SCHEMA_DEPTH = 2
 
 
 def ref_name(node):
@@ -44,10 +50,10 @@ def ref_name(node):
 
 
 def first_sentence(text):
-    return " ".join((text or "").split()).split(". ")[0][:140]
+    return " ".join((text or "").split()).split(". ")[0][:DESCRIPTION_CHARS]
 
 
-def print_schema(components, name, depth=0, seen=None, max_depth=2):
+def print_schema(components, name, depth=0, seen=None):
     seen = seen or set()
     schema = components.get(name)
     if not schema:
@@ -58,86 +64,60 @@ def print_schema(components, name, depth=0, seen=None, max_depth=2):
         desc = first_sentence(node.get("description"))
         print(f"{'  ' * depth}{field}: {kind}" + (f"  -- {desc}" if desc else ""))
         inner = (ref_name(node) or "").rstrip("[]")
-        if inner and inner in components and depth < max_depth and inner not in seen:
+        if inner and inner in components and depth < SCHEMA_DEPTH and inner not in seen:
             seen.add(inner)
-            print_schema(components, inner, depth + 1, seen, max_depth)
+            print_schema(components, inner, depth + 1, seen)
 
 
-def print_ops(spec):
-    print("== OPERATIONS (operationId | METHOD path | scopes | tokenTypes | ambient | visibility)")
-    for path, methods in spec["paths"].items():
-        for method, op in methods.items():
-            if method not in METHODS:
-                continue
-            xs = op.get("x-origin-scopes") or {}
-            params = [p["name"] for p in op.get("parameters", [])]
-            body = None
-            rb = op.get("requestBody")
-            if rb:
-                schema = rb["content"]["application/json"]["schema"]
-                body = ref_name(schema) or list((schema.get("properties") or {}).keys())
-            resp = (
-                op.get("responses", {})
-                .get("200", {})
-                .get("content", {})
-                .get("application/json", {})
-                .get("schema", {})
-            )
-            print(
-                f"{op.get('operationId')} | {method.upper()} {path} | "
-                f"scopes={xs.get('scopes')} tokenTypes={xs.get('tokenTypes')} "
-                f"ambient={xs.get('ambient')} visibility={op.get('x-cursor-visibility')}"
-            )
-            print(f"    params={params} body={body} -> {ref_name(resp) or '(empty)'}")
-            print(f"    {first_sentence(op.get('description'))}")
-
-
-def print_events(spec):
-    components = spec["components"]["schemas"]
+def print_events(components):
     print("== WEBHOOK PAYLOAD FAMILIES (schema | slugs | x-origin-webhook-resource)")
     for name, schema in components.items():
         slugs = schema.get("x-origin-webhook-events")
         if not slugs:
             continue
         print(f"{name} | {slugs} | resource={schema.get('x-origin-webhook-resource')}")
-        print_schema(components, name, depth=1, max_depth=2)
+        print_schema(components, name, depth=1)
 
 
-def print_scopes(spec):
-    print("== SCOPES (scope | tokenTypes seen | operations)")
-    table = {}
-    for path, methods in spec["paths"].items():
-        for method, op in methods.items():
-            if method not in METHODS:
-                continue
-            xs = op.get("x-origin-scopes") or {}
-            for scope in xs.get("scopes") or []:
-                entry = table.setdefault(scope, {"tokens": set(), "ops": [], "ambient": False})
-                entry["tokens"].update(xs.get("tokenTypes") or [])
-                entry["ops"].append(op.get("operationId"))
-                entry["ambient"] = entry["ambient"] or bool(xs.get("ambient"))
-    for scope in sorted(table):
-        e = table[scope]
-        print(f"{scope} | tokenTypes={sorted(e['tokens'])} ambient={e['ambient']} | {e['ops']}")
+def load_spec(path):
+    try:
+        with open(path, encoding="utf-8") as fh:
+            spec = yaml.safe_load(fh)
+    except FileNotFoundError:
+        sys.stderr.write(f"{path}: not found. Fetch it first (command in --help).\n")
+        return None
+    except yaml.YAMLError as err:
+        sys.stderr.write(f"{path}: not valid YAML ({err}).\n")
+        return None
+    if not isinstance(spec, dict) or "components" not in spec or "info" not in spec:
+        sys.stderr.write(f"{path}: not an OpenAPI document (no `info` or `components`).\n")
+        return None
+    components = (spec.get("components") or {}).get("schemas") or {}
+    if not any("x-origin-webhook-events" in s for s in components.values() if isinstance(s, dict)):
+        sys.stderr.write(
+            f"{path}: no schema carries `x-origin-webhook-events`; is this the Origin spec?\n"
+        )
+        return None
+    return spec
 
 
 def main(argv):
-    if len(argv) < 2:
+    if len(argv) < 2 or argv[1] in ("-h", "--help"):
         print(__doc__)
         return 1
-    with open(argv[1], encoding="utf-8") as fh:
-        spec = yaml.safe_load(fh)
-    mode = argv[2] if len(argv) > 2 else "all"
+    spec = load_spec(argv[1])
+    if spec is None:
+        return 1
+    components = spec["components"]["schemas"]
+    schema_mode = len(argv) > 2 and argv[2] == "schema"
+    if schema_mode and len(argv) < 4:
+        sys.stderr.write("schema mode needs a component name.\n")
+        return 1
     print(f"# {spec['info'].get('title')} {spec['info'].get('version')}")
-    if mode == "schema":
-        print_schema(spec["components"]["schemas"], argv[3])
-        return 0
-    if mode in ("ops", "all"):
-        print_ops(spec)
-    if mode in ("events", "all"):
-        print_events(spec)
-    if mode in ("scopes", "all"):
-        print_scopes(spec)
+    if schema_mode:
+        print_schema(components, argv[3])
+    else:
+        print_events(components)
     return 0
 
 

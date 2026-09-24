@@ -1,7 +1,7 @@
 # The gap bar and the escalation card
 
 Most differences are not gaps. A brief that files every difference buries the
-two or three things Cursor needs to hear. When in doubt, write the row as
+two or three that are worth raising. When in doubt, write the row as
 `workaround` with the tradeoff and an open question, not as a card.
 
 - A difference is any row whose parity label is not `same`.
@@ -66,8 +66,8 @@ can act without a call.
 - **Spec version checked:** `<info.version>` on `<date>`.
 ```
 
-Do not propose scope, field, or route names. Cursor owns the shape. Do not
-batch unrelated capabilities. Do not send cards yourself. The team decides
+Do not propose scope, field, or route names. Do not batch unrelated
+capabilities. Do not send cards yourself. The team decides
 what goes out, through their shared Slack channel with Cursor or to
 `hi@cursor.com` with "Origin API" and the app name in the subject, quoting the
 spec version and any `X-Request-ID` from failed calls. "This is by design,
