@@ -3,12 +3,12 @@
 Contents: [Labels](#labels) (parity, size) and [Template](#template)
 (provenance, §§ 1-8).
 
-Write one Markdown file at the repository root (`ORIGIN-PORTING-BRIEF.md`
-unless the team's docs convention says otherwise) and print its path. Fill
-every section. An empty section says so in one line rather than disappearing.
-Cite spec `operationId`s and `llms-full.txt` anchors. Cite the team's code by
-`file:line`. One table row per capability, one line per follow-up field, one
-feedback entry per gap. The team should be able to review it in one sitting.
+A default shape; adapt it to the app. Write one Markdown file at the
+repository root (`ORIGIN-PORTING-BRIEF.md` unless the team's docs convention
+says otherwise) and print its path. Cite spec `operationId`s and
+`llms-full.txt` anchors. Sections 1 to 5 and 7 are for the team and may cite
+their code by `file:line`. Section 6 is for Cursor and must not reveal the
+team's internals; its format is the part to keep exact.
 
 ## Labels
 
@@ -20,11 +20,11 @@ feedback entry per gap. The team should be able to review it in one sitting.
 | `reshaped` | Same capability, different shape (pagination, identifier form, event granularity, key semantics). The code changes, the behavior does not. |
 | `workaround` | Same outcome by a different route (follow-up read, client-side filter, marker). The Tradeoff column is mandatory. |
 | `not-available` | Nothing in the current spec covers it (`origin-isms.md` or `#current-limitations`). Names the closest idiom and has a question in § 7; eligible for a feedback entry. |
-| `gap` | No workaround, or one whose tradeoff meets the bar in `gap-bar.md`. Has a feedback entry in § 6. |
+| `gap` | No workaround, or one whose tradeoff meets a test in `gap-bar.md`. Has a feedback entry in § 6. |
 | `unknown` | Discovery or the spec could not answer. Has a question in § 7. |
 | `preview` (suffix) | The row touches an element badged `x-cursor-visibility: PREVIEW` (`llms-full.txt#preview`). |
 
-**Size** (kind of change, never time)
+**Size** (kind of change, not time)
 
 | Size | Meaning |
 | --- | --- |
@@ -37,9 +37,9 @@ feedback entry per gap. The team should be able to review it in one sitting.
 ```markdown
 # Origin porting brief for <app name>
 
-Planning document. Maps what this GitHub App uses from GitHub onto the Cursor
-Origin API as published on <date>. It makes no decisions about language,
-framework, or client.
+Planning document. Maps what this app uses today onto the Cursor Origin API
+as published on <date>. It makes no decisions about language, framework, or
+client.
 
 ## Provenance
 
@@ -68,20 +68,20 @@ it writes back. Then:
 
 ## 2. First decision: which repositories
 
-<What the code assumes about the repositories it acts on.> Apps have full
-scopes only on Origin-native repositories and stable outbound mirrors.
-Repositories mirrored from GitHub are read-only to apps and deliver no push
-events. **Answer question 1 before attempting § 5.**
+<What the code assumes about the repositories it acts on.> What an
+installation can do on a mirrored repository is defined in
+`llms-full.txt#mirrored-repositories` and `#events`. Answer question 1 before
+attempting § 5.
 
 ## 3. Capability table
 
-One row per GitHub capability the code uses, grouped by facet with a bold
-header row (Authentication · Installation & discovery · Configuration ·
-Repositories & contents · Pull requests · Reviews & comments · Checks ·
-Webhooks: events · Webhooks: receiver · Git). Include rows for calls a
-dependency makes on the app's behalf, marked as such.
+One row per capability the code uses today, grouped by facet (authentication,
+installation and discovery, configuration, repositories and contents, pull
+requests, reviews and comments, checks, webhook events, webhook receiver,
+git). Include rows for calls a dependency makes on the app's behalf, marked as
+such.
 
-| GitHub thing (evidence) | Origin equivalent | Parity | Size | Tradeoff | Open question |
+| Capability today (evidence) | Origin equivalent | Parity | Size | Tradeoff | Open question |
 | --- | --- | --- | --- | --- | --- |
 | `GET /repos/{o}/{r}/pulls/{n}` (`src/x.ts:12`) | `<operationId>` | same | S | none | none |
 
@@ -91,19 +91,18 @@ or `none`. `workaround` rows fill Tradeoff. `gap` rows link their feedback entry
 rows name their question.
 
 **Scopes to request:** the union of `x-origin-scopes.scopes` across every
-Origin operation above that an installation token can call, minus ambient
-and implied scopes (`write` implies `read`, and `repository:metadata:read` is
-automatic). The install URL's `scope` parameter carries this list.
+Origin operation above that an installation token can call, minus the scopes
+`llms-full.txt#scopes` says are automatic or implied.
 
 ## 4. Webhook payload fields the code reads
 
-| Event (GitHub → Origin) | GitHub field | Origin | How |
+| Event (today → Origin) | Field read today | Origin | How |
 | --- | --- | --- | --- |
-| `pull_request.synchronize` → `<slug>` | `pull_request.head.sha` | present | `payload.pullRequest.head.sha` |
-| `push` → `<slug>` | `commits[].added` | follow-up read | `<operationId>`, one call per ref update |
+| `<event.action>` → `<slug>` | `<field path>` | present | `payload.pullRequest.head.sha` |
+| `<event>` → `<slug>` | `<field path>` | follow-up read | `<operationId>`, one call per ref update |
 
 "How" is one of five values. Present at `<path>`. Present in the envelope
-(`event.type` for GitHub's `action`). Follow-up read via `<operationId>`,
+(`event.type` carries the action). Follow-up read via `<operationId>`,
 with the call count per event. Derivable, saying from what and whether the
 format is documented. Absent, pointing at the row's label in § 3. Include
 fields read only for logging.
@@ -130,16 +129,18 @@ each spec-silent behavior the brief depends on.
 ## 6. Feedback for Cursor
 
 Capabilities Origin should add, one entry per `gap` row in the `gap-bar.md`
-format. If none, write "No row met the feedback bar; the workarounds in § 3
-carry their tradeoffs."
+format: use case and API gap, in Origin terms, with nothing that reveals the
+team's internals. If none, write "No row met the feedback bar; the
+workarounds in § 3 carry their tradeoffs."
 
 ## 7. Questions for the team
 
 Decisions the team must make before the port, not asks of Cursor. Always the
 first three, then what discovery left open.
 
-1. Native repositories (or stable outbound mirrors), or repositories mirrored
-   from GitHub? Decides whether the app receives events and can write.
+1. Native repositories (or stable outbound mirrors), or repositories in
+   another mirror state? Decides whether the app receives events and can
+   write.
 2. Which follow-up reads in § 4 are acceptable at your event volume, and
    which payload fields are hard requirements?
 3. Which flows depend on a user credential today, and what should they do on

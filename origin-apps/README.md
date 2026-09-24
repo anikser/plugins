@@ -8,20 +8,18 @@ reads [Agent Skills](https://agentskills.io).
 
 ## What it includes
 
-`origin-api` is the general skill. It sends the agent to the live OpenAPI
-spec and docs for every fact, gives a table of which docs section answers
-which question, and names the four rules to check first (native versus
-mirrored repositories, event subscriptions, webhook verification, scopes
-from the spec) plus how GitHub features map onto Origin. Use it for any
-Origin work.
+`origin-api` routes questions to the section of the Origin docs that answers
+them and names the rules to check first (native versus mirrored repositories,
+event subscriptions, webhook verification, scopes from the spec, opaque
+tokens and IDs). Use it for any Origin work.
 
-`port-github-app-to-origin` builds on `origin-api`. Run it inside your GitHub
-App's repository. It reads what the app uses from GitHub out of the code, maps
-that onto the live spec, and writes a porting brief with a capability table,
-the webhook fields your handlers read and where each comes from on Origin,
-the scopes to request, a hello-world path, feedback for Cursor,
-and the questions to settle first. It plans. It writes no code and estimates
-no time.
+`port-github-app-to-origin` plans the move of an existing GitHub App. Run it
+inside the app's repository. It reads what the app uses out of the code, maps
+that onto the live Origin spec, and writes a porting brief: a capability
+table, the webhook fields your handlers read and where each comes from on
+Origin, the scopes to request, a hello-world path, feedback for Cursor, and
+the questions your team should settle first. It plans; it writes no code
+unless you ask.
 
 Both skills fetch the spec at run time and never name an endpoint from memory.
 
@@ -34,8 +32,8 @@ Both skills fetch the spec at run time and never name an endpoint from memory.
 - Holding a GitHub App (Probot, Octokit, go-github, hand-rolled) and wanting
   to know what an Origin App version looks like before starting:
   `port-github-app-to-origin`.
-- Checking which GitHub features map differently on Origin, and what to use
-  instead: either skill.
+- Checking how a capability your app relies on today maps onto Origin:
+  `port-github-app-to-origin`.
 
 In Cursor, ask about the Origin API or ask to port the app, or run
 `/origin-api` or `/port-github-app-to-origin`.
@@ -83,8 +81,8 @@ mkdir -p .cursor/skills && cp -r plugins/origin-apps/skills/* .cursor/skills/
 ## Where the brief goes
 
 The porting skill writes `ORIGIN-PORTING-BRIEF.md` at the repository root and
-prints its path. The feedback entries and questions in the brief are yours to
-send through whatever contact route you have with Cursor; Cursor wants them.
+prints its path. The Feedback for Cursor section is written to be sent as is;
+the rest of the brief is for your team.
 
 ## License
 

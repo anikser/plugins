@@ -2,86 +2,71 @@
 
 Cursor wants to hear what the team needs from Origin. Raise anything that
 blocks the team's core flow, costs them correctness, security, or scale, or
-that they would simply like Origin to do. The bar below decides whether an
-item is feedback for Cursor or a question for the team, not whether to speak
-up. Its other job is
-ordering: put the asks that block the port ahead of the ones that are
-conveniences, so the important ones are read first. When a difference has a
-workaround, writing the row as `workaround` with its tradeoff and a question
-is often the right answer; a feedback entry adds the tradeoff analysis Cursor
-needs to prioritize it.
+that they would like Origin to do. The bar below sorts items into feedback
+for Cursor (a capability Origin should add) and questions for the team
+(decisions the team must make); it does not decide whether to speak up. It
+also orders feedback so the items that block the port are read first.
 
 - A difference is any row whose parity label is not `same`.
-- A workaround reaches the same outcome with the current API by another route. A
-  follow-up read, a re-keyed identifier, a path change, a client-side filter,
-  a marker the app controls.
+- A workaround reaches the same outcome with the current API by another
+  route: a follow-up read, a re-keyed identifier, a path change, a
+  client-side filter, a marker the app controls. A `workaround` row with its
+  tradeoff is often the right answer.
 - A gap is a difference with no workaround, or a workaround whose tradeoff
-  meets one of the five tests below. Gaps become feedback entries in § 6:
-  capabilities Origin should add. Things the team must decide go to § 7 as
-  questions; the two sections do not repeat each other.
+  meets one of the tests below. Gaps become feedback entries.
 
-## Nontrivial tradeoff
-
-At least one should hold for a feedback entry. Quote it in the entry.
+## Tradeoffs that make a workaround insufficient
 
 | Tradeoff | Test |
 | --- | --- |
-| Fan-out at scale | Calls per event multiply by a factor that grows with repository or activity size (N commits × M files, or a full list scan to find one row), and the app's volume makes that budget-relevant. One bounded extra read per event is a workaround. |
-| Correctness risk | The workaround can return a wrong answer, not only a slower one. Heuristic "my own row" matching. Inferring a pull request from a SHA several versions share. Assembling a URL whose format is not contractual. |
+| Fan-out at scale | Calls per event multiply by a factor that grows with repository or activity size, and the app's volume makes that budget-relevant. One bounded extra read per event is a workaround. |
+| Correctness risk | The workaround can return a wrong answer, not only a slower one: heuristic matching of the app's own rows, inferring a pull request from a SHA several versions share, assembling a URL whose format is not contractual. |
 | Security posture | The workaround needs a broader scope, a longer-lived token, or a user credential where an installation token should do. |
-| Customer-visible behavior | The workaround changes what the team's users see or can do, not how the code is organized. |
+| Customer-visible behavior | The workaround changes what the team's users see or can do. |
 | Load-bearing | The capability sits on the hello-world path or the team's stated core flow. |
 
-## Usually a workaround or a question, not feedback
+## Usually a workaround or a question
 
 - Anything `origin-isms.md` labels `reshaped`: a documented path exists.
 - A field or filter the code does not use.
-- A GitHub convenience (`Link` pagination, numeric IDs, `html_url`) where the
-  Origin convention is a mechanical substitution.
-- Anything the changelog says shipped or the spec already carries. Re-read the
-  live spec before writing any feedback entry.
-- A concept the Origin docs do not mention. That is `not-available` or
-  `unknown` with a question; the team should still ask if they need it.
-- A GitHub Search query, when the spec has no search operation for that
-  resource. The idiom is a list operation with its filters plus a client-side
-  predicate. A sorted list read that stops at a cutoff costs proportional to
-  the matches, not the collection. If that count meets the bar, the feedback
-  is usually about a filter rather than search.
+- A convention difference (pagination style, identifier form, URL fields)
+  where the Origin convention is a mechanical substitution.
+- Anything the changelog says shipped or the spec already carries. Re-read
+  the live spec before writing feedback.
+- A capability the Origin docs do not mention: `not-available` or `unknown`
+  with a question. The team should still ask if they need it.
+- A query the app runs against a search API, when the spec has no search
+  operation for that resource. A list operation with its filters plus a
+  client-side predicate is the idiom; if that fails the fan-out test, the
+  feedback is usually about a filter.
 
-## One pattern that does meet the bar
-
-A state change the app reacts to that has no event, when reacting to exactly
-that change is the app's purpose and the state is invisible until an
-unrelated event arrives. Reading it off the next snapshot fails on correctness
-and customer-visible behavior when the app is a gate (a check, a block, a
-notification). Write the feedback entry about the event. When the app only logs or
-tidies up on that change, a question is enough.
+One pattern that does meet the bar: a state change the app reacts to that
+has no event, when reacting to that change is the app's purpose and the
+state is invisible until an unrelated event arrives. That fails correctness
+and customer-visible behavior when the app is a gate. Write the feedback
+about the event.
 
 ## The feedback format
 
-One entry per gap, in the brief's "Feedback for Cursor" section. Write it
-so Cursor can act without a call.
+One entry per gap, in the brief's "Feedback for Cursor" section. Describe the
+use case and the API gap relative to it, in Origin terms. No file paths,
+module names, framework internals, code structure, or repository names; those
+belong in the team-facing sections of the brief.
 
 ```markdown
 ### Feedback: <capability, in Origin terms>
 
-- **GitHub call, event, or permission:** `<METHOD /path>` / `<event.action>` / `<permission>`, at `<file:line>`.
-- **What the app needs from it:** <data or effect, one sentence>.
-- **Why:** <what the app does with it, one sentence>.
-- **Closest Origin operation:** `<operationId>` / `<slug>` / none, and what it lacks.
-- **Workaround considered:** <it, or "none found">.
-- **Tradeoff that meets the bar:** <one of the five, with the number or risk>.
-- **Shape that would close it:** <a capability, not a design. "List pull requests whose head is this SHA", not a route or field name.>
+- **Use case:** the app needs to <do what, for whom>, <how often or at what volume>.
+- **Origin today:** <what is missing or costly for that use case; cite the closest `operationId`, slug, or anchor, or "no operation">.
+- **Workaround considered:** <the route and the tradeoff that makes it insufficient, or "none found">.
 - **Blocking?** yes / no, for which flow.
-- **Spec version checked:** `<info.version>` on `<date>`.
+- **Spec version checked:** `<info.version>`, <date>.
 ```
 
-Describe the capability rather than proposing scope, field, or route names;
-that leaves Cursor free to fit it to the API's conventions. One capability
-per entry. Do not send feedback yourself: the team decides what goes out,
-and they are encouraged to send the feedback entries, and any § 7 questions
-they want Cursor's view on, to Cursor
-through whatever contact route they have, quoting the spec version and any
-request ID from failed calls (`llms-full.txt#errors`). A reply of "here is
-the idiom" or "not planned" is useful too; record it in the brief with the
-label it earns.
+Describe the capability rather than proposing scope, field, or route names,
+so Cursor can fit it to the API's conventions. One capability per entry.
+
+The team sends the feedback, not you. Before they forward it, they should
+strip anything that reveals their internals. A reply of "here is the idiom"
+or "not planned" is useful too; record it in the brief with the label it
+earns.

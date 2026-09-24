@@ -33,10 +33,10 @@ table here. Build the index once. Every later step looks things up in it.
 
 ## Matching
 
-Match in this order and stop at the first rule that yields a confirmed
+Try these in order and stop at the first rule that yields a confirmed
 counterpart. Confirmed means you read the Origin operation's description and
-parameters and it answers the same question the GitHub call answers. A name
-match is a candidate, never a result.
+parameters and it answers the same question the current call answers. A name
+match is a candidate, not a result.
 
 **REST calls**
 
