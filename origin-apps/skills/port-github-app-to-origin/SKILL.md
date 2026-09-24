@@ -1,7 +1,7 @@
 ---
 name: port-github-app-to-origin
 description: >-
-  Plan the port of an existing GitHub App to a Cursor Origin App. Use when a
+  Plans the port of an existing GitHub App to a Cursor Origin App. Use when a
   repo is a GitHub App (manifest, Probot, Octokit or another GitHub SDK, webhook
   signature handlers) and the task is to bring it to Origin or compare it with
   the Origin API. Maps what the app uses from GitHub onto the live Origin spec
@@ -61,6 +61,22 @@ GitHub. Follow it first. Nothing here repeats it. Two rules on top:
 5. **Close with the questions**, pruned to what discovery left open. The
    first is always native or mirror, because it decides whether the app
    receives events at all.
+6. **Check the brief and fix.** Copy this list, tick each line, fix what
+   fails, and repeat until a pass changes nothing. Both validation runs found
+   a missed row on this pass.
+
+   - [ ] Every Origin cell names an `operationId`, slug, or anchor that
+         exists in the files fetched in step 1.
+   - [ ] Every `gap` row has a card, and the card quotes one of the five
+         tradeoff tests in `gap-bar.md`.
+   - [ ] Every `unknown` row has a question in § 7.
+   - [ ] No `origin-isms.md` row is labeled `gap`.
+   - [ ] Every event the code handles has a § 4 row for each payload field
+         it reads, including log-only fields.
+   - [ ] Calls the framework makes on the app's behalf appear as rows.
+   - [ ] The scopes line equals the union of `x-origin-scopes.scopes` over
+         the § 3 operations.
+   - [ ] Question 1 is native or mirror.
 
 ## Not in scope
 
@@ -72,7 +88,7 @@ cards to Cursor. The brief carries them and the team decides.
 
 | File | Read when |
 | --- | --- |
-| `../origin-api/SKILL.md` | First. Sources and fundamentals. |
+| `origin-api` skill (install both) | First. Sources and fundamentals. |
 | `references/discovery.md` | Scanning the codebase. |
 | `references/spec-mapping.md` | Building the index. Matching calls, events, and fields. |
 | `references/origin-isms.md` | Labeling a missing GitHub feature. |

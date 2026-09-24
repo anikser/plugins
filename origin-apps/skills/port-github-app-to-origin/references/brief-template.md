@@ -1,5 +1,8 @@
 # Porting brief template
 
+Contents: [Labels](#labels) (parity, size) and [Template](#template)
+(provenance, §§ 1-8).
+
 Write one Markdown file at the repository root (`ORIGIN-PORTING-BRIEF.md`
 unless the team's docs convention says otherwise) and print its path. Fill
 every section. An empty section says so in one line rather than disappearing.
@@ -122,7 +125,7 @@ spec-silent behavior the brief depends on, stated as the observation to make.
 6. Perform the smallest action in § 3 and confirm the slug and the § 4
    fields arrive. If the ping arrived and this did not, re-check steps 2 and
    3 first.
-7. Smallest write from § 3 (check run with a stable `key`, PR comment),
+7. Smallest write from § 3 (check run with a stable `key`, pull request comment),
    confirming its scope is in the grant.
 
 ## 6. Gaps worth raising
@@ -140,8 +143,8 @@ Always the first three, then what discovery left open.
    which payload fields are hard requirements?
 3. Which flows depend on a user credential today, and what should they do on
    Origin?
-4. Does anything key approvals or reviews by commit SHA rather than PR
-   version?
+4. Does anything key approvals or reviews by commit SHA rather than pull
+   request version?
 5. How do you identify your own check runs, comments, and reviews today? Can
    a key or marker you control replace actor matching?
 6. Do you generate clients from OpenAPI? (Read the changelog for renames.)

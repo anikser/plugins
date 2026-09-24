@@ -43,7 +43,7 @@ match is a candidate, never a result.
    (`{owner}/{repo}` → `{ownerSlug}/{repoName}`, `{pull_number}` →
    `{pullNumber}`; custom verbs are `:verb` suffixes such as
    `…/contents:batchGet`).
-2. Re-home GitHub's issue-flavored PR calls: `/issues/{n}/comments` and
+2. Re-home GitHub's issue-flavored pull request calls: `/issues/{n}/comments` and
    `/issues/{n}/labels` used *on a pull request* live under `/pulls/{n}/…`.
    That is a path change, not a gap. When the code uses them on real issues,
    see `origin-isms.md`.
@@ -90,6 +90,6 @@ event.
   has not declined it, and never `by-design-absent`, because only
   `origin-isms.md` rows earn that.
 - A behavior the code depends on that the docs do not state (does an event
-  fire for a draft PR? does `updatedAt` move on a comment?) becomes an open
+  fire for a draft pull request? does `updatedAt` move on a comment?) becomes an open
   question plus a hello-world step that observes it on a native repository.
   Do not settle it from GitHub's behavior.

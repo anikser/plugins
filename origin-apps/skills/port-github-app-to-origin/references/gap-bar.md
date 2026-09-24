@@ -5,7 +5,7 @@ two or three things Cursor needs to hear. When in doubt, write the row as
 `workaround` with the tradeoff and an open question, not as a card.
 
 - A difference is any row whose parity label is not `same`.
-- A workaround reaches the same outcome with today's API by another route. A
+- A workaround reaches the same outcome with the current API by another route. A
   follow-up read, a re-keyed identifier, a path change, a client-side filter,
   a marker the app controls.
 - A gap is a difference with no workaround, or a workaround whose tradeoff
@@ -18,7 +18,7 @@ At least one must hold. Quote it on the card.
 | Tradeoff | Test |
 | --- | --- |
 | Fan-out at scale | Calls per event multiply by a factor that grows with repository or activity size (N commits × M files, or a full list scan to find one row), and the app's volume makes that budget-relevant. One bounded extra read per event is trivial. |
-| Correctness risk | The workaround can return a wrong answer, not only a slower one. Heuristic "my own row" matching. Inferring a PR from a SHA several versions share. Assembling a URL whose format is not contractual. |
+| Correctness risk | The workaround can return a wrong answer, not only a slower one. Heuristic "my own row" matching. Inferring a pull request from a SHA several versions share. Assembling a URL whose format is not contractual. |
 | Security posture | The workaround needs a broader scope, a longer-lived token, or a user credential where an installation token should do. |
 | Customer-visible behavior | The workaround changes what the team's users see or can do, not how the code is organized. |
 | Load-bearing | The capability sits on the hello-world path or the team's stated core flow. |
@@ -58,7 +58,7 @@ can act without a call.
 - **GitHub call, event, or permission:** `<METHOD /path>` / `<event.action>` / `<permission>`, at `<file:line>`.
 - **What the app needs from it:** <data or effect, one sentence>.
 - **Why:** <what the app does with it, one sentence>.
-- **Closest Origin operation today:** `<operationId>` / `<slug>` / none, and what it lacks.
+- **Closest Origin operation:** `<operationId>` / `<slug>` / none, and what it lacks.
 - **Workaround considered:** <it, or "none found">.
 - **Tradeoff that fails the bar:** <one of the five, with the number or risk>.
 - **Shape that would close it:** <a capability, not a design. "List pull requests whose head is this SHA", not a route or field name.>

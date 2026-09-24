@@ -1,8 +1,8 @@
 ---
 name: origin-api
 description: >-
-  Build on the Cursor Origin API. Create an Origin App, authenticate as it,
-  call the REST API, receive webhooks. Use whenever code or a plan touches
+  Guides building on the Cursor Origin API: creating an Origin App,
+  authenticating as it, calling the REST API, receiving webhooks. Use whenever code or a plan touches
   Origin endpoints, installation tokens, scopes, webhook subscriptions or
   signatures, page tokens, or an Origin App manifest. Lists the sources to
   fetch first and the Origin rules that GitHub habits get wrong.
@@ -70,8 +70,8 @@ docs disagree, the docs win.
   every request, including continuations. There is no `Link` header and no
   total.
 - **IDs are TypeIDs** (`repo_…`, `i_…`, `cmt_…`), never integers. Cache IDs,
-  not slugs. `/repos/_/{repoId}` survives renames. 64-bit integers (PR
-  numbers, versions) are JSON strings. Defaults are present (`false`, `0`,
+  not slugs. `/repos/_/{repoId}` survives renames. 64-bit integers (pull
+  request numbers, versions) are JSON strings. Defaults are present (`false`, `0`,
   `[]`), so a present `false` is a value.
 - **`404` means not found or no access.** Branch on status and `code`, never
   on message text. Quote `X-Request-ID` when escalating.
@@ -79,7 +79,7 @@ docs disagree, the docs win.
   `429`. Git HTTPS is metered separately. Cursor raises per-app budgets on
   request.
 - **These are decisions, not gaps.** No commit statuses (check runs upsert on
-  a caller-stable `key`). No Issues (conversation is PR comments, threads,
+  a caller-stable `key`). No Issues (conversation is pull request comments, threads,
   reviews, and labels). No GraphQL. No per-repository webhook CRUD. No user or
   email directory. Reviews anchor to a pull request version, not a SHA. A
   thread materializes from its first diff-anchored comment.

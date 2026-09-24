@@ -17,7 +17,7 @@ and the idiom. Confirm current wording in `llms-full.txt`.
 | `Link` / `page` / `per_page` pagination, total counts | `reshaped` | `pageSize` / `pageToken` / `nextPageToken`; opaque; no total. |
 | GraphQL | `by-design-absent` | REST; decompose and count the fan-out. |
 | Commit statuses (`statuses` permission, `POST /statuses/{sha}`) | `reshaped` | Check runs upserting on a caller-stable `key`; rulesets bind on the key. |
-| Issues (`issues` permission, `issues.*` events, `/issues/{n}` not on a PR) | `by-design-absent` | PR comments, threads, reviews, labels on pull requests. Ask what the PR-scoped behavior should be. |
+| Issues (`issues` permission, `issues.*` events, `/issues/{n}` not on a pull request) | `by-design-absent` | Pull request comments, threads, reviews, and labels. Ask what the pull-request-scoped behavior should be. |
 | `/issues/{n}/comments`, `/issues/{n}/labels` used on a pull request | `reshaped` | Same calls under `/pulls/{n}/…`. |
 | Repository webhook CRUD (`/repos/…/hooks`) | `by-design-absent` | Subscriptions are app settings. |
 | App-manifest conversion, OAuth-app token mints | `by-design-absent` | App creation form (accepts prefill params) or user-credential `CreateApp`. |
