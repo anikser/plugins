@@ -16,17 +16,14 @@
     "origin-api",
     "origin-app",
     "webhooks",
-    "github-app",
-    "integration",
-    "porting"
+    "github-app"
   ],
   "category": "developer-tools",
   "tags": [
     "origin",
     "origin-api",
     "webhooks",
-    "github-app",
-    "integration"
+    "github-app"
   ],
   "skills": "./skills/"
 }

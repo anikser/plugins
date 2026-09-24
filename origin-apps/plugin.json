@@ -15,8 +15,6 @@
     "origin-api",
     "origin-app",
     "webhooks",
-    "github-app",
-    "integration",
-    "porting"
+    "github-app"
   ]
 }

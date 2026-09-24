@@ -76,10 +76,11 @@ observable another way before classifying it.
 
 **Payload fields → schema properties.** For each field path a handler reads,
 walk the mapped family's "Payload Fields" list in `llms-full.txt` and record
-one of four outcomes.
-Present at `<path>`. Follow-up read via `<operationId>` with identifiers the
-payload carries. Derivable from present fields, saying how and whether the
-format is contractual. Absent, which goes to the gap bar. A field on the REST
+one of five outcomes, matching the brief template's "How" column.
+Present at `<path>`. Present in the envelope (`event.type` carries what
+GitHub puts in `action`). Follow-up read via `<operationId>` with identifiers
+the payload carries. Derivable from present fields, saying how and whether
+the format is contractual. Absent, which goes to the gap bar. A field on the REST
 component that the webhook twin lacks means a follow-up `Get…` on every
 event.
 

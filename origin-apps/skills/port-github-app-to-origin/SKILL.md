@@ -80,7 +80,7 @@ scopes, webhooks, paging, IDs, and errors. Follow it first. Nothing here repeats
 
 Writing port code or adapters. Choosing a language, framework, or client.
 Estimating in time. Asking for anything the codebase contains. Sending gap
-cards to Cursor. The brief carries them and the team decides.
+cards to Cursor yourself; the brief carries them and the team sends them.
 
 ## Reference files
 
