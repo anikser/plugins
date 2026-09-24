@@ -3,8 +3,9 @@
 Check here before labeling anything `gap`. Each row names the label to use
 and where the Origin answer lives today (an anchor in `llms-full.txt` unless
 noted). `reshaped` rows have a documented path, so they get a question if
-the team wants the GitHub shape back rather than a card. `not-available`
-rows get a question, and a card if they meet the gap bar.
+the team wants the GitHub shape back rather than a feedback entry.
+`not-available` rows get a question, and a feedback entry if they meet the
+bar.
 Read the source; do not copy this table into the brief.
 
 | GitHub call, event, or permission | Label | Where the Origin answer lives |
@@ -17,9 +18,9 @@ Read the source; do not copy this table into the brief.
 | Permissions `<noun>: read\|write` | `reshaped` | `#scopes`; `x-origin-scopes` per operation |
 | Numeric IDs, `/repositories/{id}` | `reshaped` | `#ids`, `#repository-paths` |
 | `Link` / `page` / `per_page` pagination, total counts | `reshaped` | `#pagination` |
-| GraphQL | `not-available` | No GraphQL endpoint in the current spec. Decompose into REST calls and count the fan-out; a decomposition that fails the gap bar earns a card about that read. |
+| GraphQL | `not-available` | No GraphQL endpoint in the current spec. Decompose into REST calls and count the fan-out; a decomposition that meets the feedback bar earns an entry about that read. |
 | Commit statuses (`statuses` permission, `POST /statuses/{sha}`) | `reshaped` | `#check-runs` (check runs with a stable `key`) |
-| Issues (`issues` permission, `issues.*` events, `/issues/{n}` not on a pull request) | `not-available` | No Issues endpoints or events in the current spec. Pull request comments, threads, reviews, and labels cover the pull-request half. Ask what the team needs for the rest; an issue-driven app may earn a card. |
+| Issues (`issues` permission, `issues.*` events, `/issues/{n}` not on a pull request) | `not-available` | No Issues endpoints or events in the current spec. Pull request comments, threads, reviews, and labels cover the pull-request half. Ask what the team needs for the rest; an issue-driven app may earn a feedback entry. |
 | `/issues/{n}/comments`, `/issues/{n}/labels` used on a pull request | `reshaped` | Pull requests endpoint reference; same calls under `/pulls/{n}/…` |
 | Repository webhook CRUD (`/repos/…/hooks`) | `reshaped` | Subscriptions are set per app through Create App / Update App `events` (`#events`). |
 | App-manifest conversion | `reshaped` | App creation form or `CreateApp` (`#installation`, endpoint reference) |

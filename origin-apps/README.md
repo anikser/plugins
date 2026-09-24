@@ -19,7 +19,7 @@ Origin work.
 App's repository. It reads what the app uses from GitHub out of the code, maps
 that onto the live spec, and writes a porting brief with a capability table,
 the webhook fields your handlers read and where each comes from on Origin,
-the scopes to request, a hello-world path, the gaps worth raising with Cursor,
+the scopes to request, a hello-world path, feedback for Cursor,
 and the questions to settle first. It plans. It writes no code and estimates
 no time.
 
@@ -83,8 +83,8 @@ mkdir -p .cursor/skills && cp -r plugins/origin-apps/skills/* .cursor/skills/
 ## Where the brief goes
 
 The porting skill writes `ORIGIN-PORTING-BRIEF.md` at the repository root and
-prints its path. The gap cards and questions in the brief are yours to send
-through whatever contact route you have with Cursor; Cursor wants them.
+prints its path. The feedback entries and questions in the brief are yours to
+send through whatever contact route you have with Cursor; Cursor wants them.
 
 ## License
 

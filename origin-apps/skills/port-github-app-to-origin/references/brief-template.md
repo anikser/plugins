@@ -8,7 +8,7 @@ unless the team's docs convention says otherwise) and print its path. Fill
 every section. An empty section says so in one line rather than disappearing.
 Cite spec `operationId`s and `llms-full.txt` anchors. Cite the team's code by
 `file:line`. One table row per capability, one line per follow-up field, one
-card per gap. The team should be able to review it in one sitting.
+feedback entry per gap. The team should be able to review it in one sitting.
 
 ## Labels
 
@@ -19,8 +19,8 @@ card per gap. The team should be able to review it in one sitting.
 | `same` | Same capability, same shape. A path or field rename at most. |
 | `reshaped` | Same capability, different shape (pagination, identifier form, event granularity, key semantics). The code changes, the behavior does not. |
 | `workaround` | Same outcome by a different route (follow-up read, client-side filter, marker). The Tradeoff column is mandatory. |
-| `not-available` | Nothing in the current spec covers it (`origin-isms.md` or `#current-limitations`). Names the closest idiom and has a question in § 7; eligible for a card. |
-| `gap` | No workaround, or one that fails `gap-bar.md`. Has a card in § 6. |
+| `not-available` | Nothing in the current spec covers it (`origin-isms.md` or `#current-limitations`). Names the closest idiom and has a question in § 7; eligible for a feedback entry. |
+| `gap` | No workaround, or one whose tradeoff meets the bar in `gap-bar.md`. Has a feedback entry in § 6. |
 | `unknown` | Discovery or the spec could not answer. Has a question in § 7. |
 | `preview` (suffix) | The row touches an element badged `x-cursor-visibility: PREVIEW` (`llms-full.txt#preview`). |
 
@@ -30,7 +30,7 @@ card per gap. The team should be able to review it in one sitting.
 | --- | --- |
 | S | Adapter or client layer. A path, header, identifier, or pagination rewrite, or a re-keyed lookup. |
 | M | A new code path. A follow-up read where the payload used to suffice, a handshake step, a new handler, a data-model change for a new identifier or version concept. |
-| L | A product or architecture change. A flow that depended on user OAuth, a customer-visible behavior, a dependency on native repositories, an open gap card. |
+| L | A product or architecture change. A flow that depended on user OAuth, a customer-visible behavior, a dependency on native repositories, an open feedback entry. |
 
 ## Template
 
@@ -86,7 +86,7 @@ dependency makes on the app's behalf, marked as such.
 | `GET /repos/{o}/{r}/pulls/{n}` (`src/x.ts:12`) | `<operationId>` | same | S | none | none |
 
 The Origin column names an `operationId`, a slug, a `llms-full.txt` anchor,
-or `none`. `workaround` rows fill Tradeoff. `gap` rows link their card.
+or `none`. `workaround` rows fill Tradeoff. `gap` rows link their feedback entry.
 `not-available` rows name the closest idiom and their question. `unknown`
 rows name their question.
 
@@ -127,15 +127,16 @@ each spec-silent behavior the brief depends on.
    first.
 7. Smallest write from § 3 succeeds with the scopes from the § 3 line.
 
-## 6. Gaps worth raising
+## 6. Feedback for Cursor
 
-Zero or more cards in the `gap-bar.md` shape. If zero, write "No row met
-the gap bar. The workarounds in § 3 carry their tradeoffs, and § 7 carries
-the asks." Cursor reads both sections.
+Capabilities Origin should add, one entry per `gap` row in the `gap-bar.md`
+format. If none, write "No row met the feedback bar; the workarounds in § 3
+carry their tradeoffs."
 
 ## 7. Questions for the team
 
-Always the first three, then what discovery left open.
+Decisions the team must make before the port, not asks of Cursor. Always the
+first three, then what discovery left open.
 
 1. Native repositories (or stable outbound mirrors), or repositories mirrored
    from GitHub? Decides whether the app receives events and can write.

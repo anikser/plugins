@@ -46,7 +46,7 @@ scopes, webhooks, paging, IDs, and errors. Follow it first. Nothing here repeats
    lacks a field the REST resource has, read the resource; see the per-field
    notes under `#event-payloads`. Name the call for each such field. Then:
    - Check `origin-isms.md` before writing `gap`. Check `gap-bar.md` before
-     writing any card.
+     writing any feedback entry.
    - A GitHub feature the Origin docs do not mention is `unknown` with a
      question. The question is how the team tells Cursor they need it.
    - A behavior the code depends on that the docs neither confirm nor deny
@@ -64,7 +64,7 @@ scopes, webhooks, paging, IDs, and errors. Follow it first. Nothing here repeats
 
    - [ ] Every Origin cell names an `operationId`, slug, or anchor that
          exists in the files fetched in step 1.
-   - [ ] Every `gap` row has a card, and the card quotes one of the five
+   - [ ] Every `gap` row has a feedback entry, and the entry quotes one of the five
          tradeoff tests in `gap-bar.md`.
    - [ ] Every `unknown` row has a question in § 7.
    - [ ] No row `origin-isms.md` labels `reshaped` is labeled `gap`; every
@@ -80,7 +80,7 @@ scopes, webhooks, paging, IDs, and errors. Follow it first. Nothing here repeats
 
 Writing port code or adapters. Choosing a language, framework, or client.
 Estimating in time. Asking for anything the codebase contains. Sending gap
-cards to Cursor yourself; the brief carries them and the team sends them.
+feedback to Cursor yourself; the brief carries it and the team sends it.
 
 ## Reference files
 
@@ -90,5 +90,5 @@ cards to Cursor yourself; the brief carries them and the team sends them.
 | `references/discovery.md` | Scanning the codebase. |
 | `references/spec-mapping.md` | Building the index. Matching calls, events, and fields. |
 | `references/origin-isms.md` | Labeling a missing GitHub feature. |
-| `references/gap-bar.md` | Deciding whether a difference earns a card, and writing it. |
+| `references/gap-bar.md` | Deciding whether a difference is feedback for Cursor, and writing the entry. |
 | `references/brief-template.md` | Writing the output. |
