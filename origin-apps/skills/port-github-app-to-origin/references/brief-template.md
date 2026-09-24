@@ -8,7 +8,7 @@ unless the team's docs convention says otherwise) and print its path. Fill
 every section. An empty section says so in one line rather than disappearing.
 Cite spec `operationId`s and `llms-full.txt` anchors. Cite the team's code by
 `file:line`. One table row per capability, one line per follow-up field, one
-card per gap. The team will argue over it in one sitting.
+card per gap. The team should be able to review it in one sitting.
 
 ## Labels
 
@@ -129,8 +129,9 @@ each spec-silent behavior the brief depends on.
 
 ## 6. Gaps worth raising
 
-Zero or more cards in the `gap-bar.md` shape. If zero, write "No row failed
-the gap bar. The workarounds in § 3 carry their tradeoffs." Do not pad.
+Zero or more cards in the `gap-bar.md` shape. If zero, write "No row met
+the gap bar. The workarounds in § 3 carry their tradeoffs, and § 7 carries
+the asks." Cursor reads both sections.
 
 ## 7. Questions for the team
 

@@ -83,8 +83,8 @@ mkdir -p .cursor/skills && cp -r plugins/origin-apps/skills/* .cursor/skills/
 ## Where the brief goes
 
 The porting skill writes `ORIGIN-PORTING-BRIEF.md` at the repository root and
-prints its path. The gap cards in the brief are yours to send through
-whatever contact route you have with Cursor.
+prints its path. The gap cards and questions in the brief are yours to send
+through whatever contact route you have with Cursor; Cursor wants them.
 
 ## License
 

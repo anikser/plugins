@@ -47,9 +47,8 @@ scopes, webhooks, paging, IDs, and errors. Follow it first. Nothing here repeats
    notes under `#event-payloads`. Name the call for each such field. Then:
    - Check `origin-isms.md` before writing `gap`. Check `gap-bar.md` before
      writing any card.
-   - A GitHub feature the Origin docs never mention (Marketplace billing,
-     merge queues, Actions, Pages) is `unknown` with a question. It is never
-     `gap`.
+   - A GitHub feature the Origin docs do not mention is `unknown` with a
+     question. The question is how the team tells Cursor they need it.
    - A behavior the code depends on that the docs neither confirm nor deny
      (does event X fire in case Y? does `updatedAt` move on comments?) is a
      question plus a hello-world step that observes it. Never guess it into

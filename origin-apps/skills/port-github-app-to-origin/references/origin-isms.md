@@ -2,8 +2,9 @@
 
 Check here before labeling anything `gap`. Each row names the label to use
 and where the Origin answer lives today (an anchor in `llms-full.txt` unless
-noted). `reshaped` rows have a documented path and get no card.
-`not-available` rows get a question, and a card if they fail the gap bar.
+noted). `reshaped` rows have a documented path, so they get a question if
+the team wants the GitHub shape back rather than a card. `not-available`
+rows get a question, and a card if they meet the gap bar.
 Read the source; do not copy this table into the brief.
 
 | GitHub call, event, or permission | Label | Where the Origin answer lives |
@@ -35,6 +36,5 @@ Read the source; do not copy this table into the brief.
 | Finding own check runs or comments by actor | `reshaped` | `#check-runs` (`key`); comments and reviews by a marker the app controls |
 | Requested-reviewer team pages, `created_via` | `not-available` | Groups exist and resolve by slug; there is no group membership read in the current spec. |
 
-A feature that is not on this list and that the Origin docs never mention
-(Marketplace billing, merge queues, Actions, Pages, Projects) is `unknown`
-with a question.
+A feature that is not on this list and that the Origin docs do not mention
+is `unknown` with a question.

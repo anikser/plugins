@@ -85,11 +85,10 @@ event.
 
 ## Out of domain and spec-silent
 
-- A concept neither the spec nor `llms-full.txt` mentions (Marketplace
-  billing, merge queues, Actions, Pages, Projects, Discussions, HTML probes)
-  is `unknown` with an up-front question. It is never `gap`, because Origin
-  has not declined it, and never `not-available` on the strength of this
-  skill alone; only `origin-isms.md` rows earn that.
+- A concept neither the spec nor `llms-full.txt` mentions is `unknown`
+  with an up-front question rather than `gap`: there is no Origin answer yet
+  to compare against, and the question is how the team tells Cursor they
+  need it. Use `not-available` only for `origin-isms.md` rows.
 - A behavior the code depends on that the docs do not state (does an event
   fire for a draft pull request? does `updatedAt` move on a comment?) becomes an open
   question plus a hello-world step that observes it on a native repository.
