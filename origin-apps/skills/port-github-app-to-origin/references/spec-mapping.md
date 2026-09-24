@@ -7,9 +7,9 @@ table here. Build the index once. Every later step looks things up in it.
 
 | Extension | Where | Use |
 | --- | --- | --- |
-| `x-origin-scopes` | every operation | The scope, credential, and ambient rules for that operation. Rules in `llms-full.txt#scopes`. |
-| `x-origin-webhook-events` | payload schemas | The slugs that deliver this payload shape. A schema carrying it is a webhook family. Infer the embedded resource from its `$ref`s; some families (pushes, deletions, reviewer changes) have no REST twin. |
-| `x-cursor-visibility` | some schema fields | A stability badge on a field. Carry it into the brief as a `preview` suffix on rows that read the field. |
+| `x-origin-scopes` | every operation | The scope and credential rules for that operation. `llms-full.txt#scopes`, `#endpoint-reference`. |
+| `x-origin-webhook-events` | payload schemas | The slugs that deliver this payload shape; a schema carrying it is a webhook family. `#event-payloads`. Infer the embedded resource from its `$ref`s; some families have no REST twin. |
+| `x-cursor-visibility: PREVIEW` | operations, parameters, schemas, fields | `#preview`. Carry it into the brief as a `preview` suffix on any row that touches a badged element. |
 
 ## Build the index
 
@@ -39,7 +39,7 @@ match is a candidate, never a result.
 **REST calls**
 
 1. Look for the same resource path under the Origin base path
-   (`llms-full.txt#repository-paths` gives the path shape). Most GitHub
+   (`llms-full.txt#repository-paths` and `#ids` give the path forms). Most GitHub
    repository, pull request, check, label, branch, and commit paths have a
    direct or near-direct counterpart.
 2. Re-home GitHub's issue-flavored pull request calls (`/issues/{n}/comments`,

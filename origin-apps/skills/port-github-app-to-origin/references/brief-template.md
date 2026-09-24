@@ -22,7 +22,7 @@ card per gap. The team will argue over it in one sitting.
 | `by-design-absent` | Origin deliberately does not reproduce it (`origin-isms.md`). Names the idiom or "no equivalent; decision needed". |
 | `gap` | No workaround, or one that fails `gap-bar.md`. Has a card in § 6. |
 | `unknown` | Discovery or the spec could not answer. Has a question in § 7. |
-| `preview` (suffix) | The Origin operation is `x-cursor-visibility: PREVIEW`. Usable. The shape may move. |
+| `preview` (suffix) | The row touches an element badged `x-cursor-visibility: PREVIEW` (`llms-full.txt#preview`). |
 
 **Size** (kind of change, never time)
 

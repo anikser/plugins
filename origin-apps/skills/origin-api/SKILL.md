@@ -19,9 +19,8 @@ which rules to check first. It restates nothing you can read there.
 
 ## Fetch first. Never name an endpoint, scope, slug, header, or limit from memory.
 
-- `https://cursor.com/docs/api/origin/openapi.yaml`: the contract. Every
-  operation carries `x-origin-scopes`; every webhook payload schema carries
-  `x-origin-webhook-events`, the list of slugs that deliver it.
+- `https://cursor.com/docs/api/origin/openapi.yaml`: the contract. Its
+  `x-origin-*` extensions are summarized under `#endpoint-reference`.
 - `https://cursor.com/docs/api/origin/llms-full.txt`: the prose reference.
   Anchors below are sections of this file.
 - `https://cursor.com/docs/api/origin/llms.txt` (index) and
@@ -40,8 +39,11 @@ docs disagree, the docs win.
 | What an installation can do on a mirrored repository | `#mirrored-repositories` |
 | Webhook headers, signature, envelope, retries, pausing, recovery | `#webhooks` and its subsections |
 | Which events exist and which are delivered without subscribing | `#events` |
-| Payload shapes | `#event-payloads` and the schema's `x-origin-webhook-events` |
-| Pagination, errors, request IDs, repository paths, ID form | `#common-conventions` |
+| Payload shapes and the `x-origin-webhook-events` extension | `#event-payloads` |
+| Pagination, errors, request IDs, repository paths | `#common-conventions` |
+| ID form and stability | `#ids` |
+| What a `PREVIEW` badge means | `#preview` |
+| GitHub features Origin does not have | `#coming-from-github` |
 | Rate limits and headers | `#rate-limits` |
 | Check-run keys, attempts, stale writes | `#check-runs` |
 | What is not there yet | `#current-limitations` |
@@ -57,8 +59,8 @@ week.
    state an installation can only read, and pushes are not delivered
    (`#mirrored-repositories`, `#events`).
 2. **Subscribe.** Only the `installation.*` events arrive without a
-   subscription. Select every other event the app needs; a missing
-   subscription is silence, not an error (`#events`).
+   subscription. `#events` says what else delivery needs; a missing
+   subscription is silence, not an error.
 3. **Verify, dedupe, acknowledge.** Verify the signature over the raw body
    before parsing, dedupe on the delivery ID, return `2xx`, then process
    (`#signature-verification`, `#retries`, `#automatic-disable`). The digest
@@ -66,20 +68,11 @@ week.
    verifier passes.
 4. **Scopes from the spec.** Request the union of `x-origin-scopes.scopes`
    over the operations the app calls, and nothing else (`#scopes`).
+5. **Opaque tokens and IDs.** Page tokens and IDs are not yours to build or
+   parse (`#pagination`, `#ids`).
 
 ## Coming from GitHub
 
-Origin does not have these. Build the Origin idiom instead of emulating the
-GitHub one. Until the docs carry this list, it lives here:
-
-- Issues. Conversation is pull request comments, threads, reviews, labels.
-- Commit statuses. Check runs with a stable `key` (`#check-runs`).
-- GraphQL. REST only.
-- Per-repository webhook CRUD. Subscriptions are app settings.
-- User, email, team, or member directory. Actors are IDs, plus a handle
-  where the payload exposes one.
-- `/user`-style flows. Discover repositories through the installation.
-- Reviews keyed by commit SHA. Reviews reference a pull request version.
-- Numeric IDs and page numbers. IDs and page tokens are opaque strings; do
-  not parse or construct them, and cache repository IDs rather than slugs
-  (`#repository-paths`, `#pagination`).
+GitHub habits do not carry over. Before mapping a GitHub feature onto Origin,
+read `#coming-from-github` for what Origin does not have and what to use
+instead.
