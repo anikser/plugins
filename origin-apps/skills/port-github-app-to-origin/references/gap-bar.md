@@ -33,8 +33,9 @@ At least one must hold. Quote it on the card.
   live spec before writing any card.
 - A concept the Origin docs never mention (Marketplace billing, merge queues,
   Actions, Projects). That is `unknown` plus a question.
-- A GitHub Search query. The idiom is a list operation with its filters plus a
-  client-side predicate. A sorted list read that stops at a cutoff costs
+- A GitHub Search query, when the spec has no search operation for that
+  resource. The idiom is a list operation with its filters plus a client-side
+  predicate. A sorted list read that stops at a cutoff costs
   proportional to the matches, not the collection. If that count fails the
   bar, the card is about a filter, never about search.
 
@@ -67,9 +68,8 @@ can act without a call.
 ```
 
 Do not propose scope, field, or route names. Do not batch unrelated
-capabilities. Do not send cards yourself. The team decides
-what goes out, through their shared Slack channel with Cursor or to
-`hi@cursor.com` with "Origin API" and the app name in the subject, quoting the
-spec version and any `X-Request-ID` from failed calls. "This is by design,
-here is the idiom" is a fine answer. It goes back into the brief as
-`by-design-absent`.
+capabilities. Do not send cards yourself. The team decides what goes out,
+through whatever contact route they have with Cursor, quoting the spec
+version and any request ID from failed calls (`llms-full.txt#errors`). "This
+is by design, here is the idiom" is a fine answer. It goes back into the
+brief as `by-design-absent`.

@@ -2,10 +2,11 @@
 name: origin-api
 description: >-
   Guides building on the Cursor Origin API: creating an Origin App,
-  authenticating as it, calling the REST API, receiving webhooks. Use whenever code or a plan touches
-  Origin endpoints, installation tokens, scopes, webhook subscriptions or
-  signatures, page tokens, or an Origin App manifest. Lists the sources to
-  fetch first and the Origin rules that GitHub habits get wrong.
+  authenticating as it, calling the REST API, receiving webhooks. Use whenever
+  code or a plan touches Origin endpoints, installation tokens, scopes, webhook
+  subscriptions or signatures, page tokens, or an Origin App manifest. Points
+  at the docs section that answers each question and names the few rules that
+  GitHub habits get wrong.
 license: MIT
 compatibility: >-
   Needs network access to https://cursor.com/docs/api/origin/* at run time.
@@ -13,73 +14,72 @@ compatibility: >-
 
 # Build on the Origin API
 
-## Fetch first. Never name an endpoint, scope, slug, or header from memory.
+The docs are the only source of truth. This skill tells you where to look and
+which rules to check first. It restates nothing you can read there.
 
-- `https://cursor.com/docs/api/origin/openapi.yaml` is the contract. Every
-  operation carries `x-origin-scopes` (`scopes`, `tokenTypes`, `ambient`).
-  Every webhook payload schema carries `x-origin-webhook-events`, the only
-  authoritative list of subscribable slugs.
-- `https://cursor.com/docs/api/origin/llms-full.txt` covers the installation
-  flow, authentication, the scopes table, mirrored repositories, webhook
-  headers and verification, the delivery envelope, retries, pagination,
-  errors, and current limitations.
-- `https://cursor.com/docs/api/origin/llms.txt` is the index.
-  `https://cursor.com/docs/api/origin/changelog` says what moved.
+## Fetch first. Never name an endpoint, scope, slug, header, or limit from memory.
+
+- `https://cursor.com/docs/api/origin/openapi.yaml`: the contract. Every
+  operation carries `x-origin-scopes`; every webhook payload schema carries
+  `x-origin-webhook-events`, the list of slugs that deliver it.
+- `https://cursor.com/docs/api/origin/llms-full.txt`: the prose reference.
+  Anchors below are sections of this file.
+- `https://cursor.com/docs/api/origin/llms.txt` (index) and
+  `https://cursor.com/docs/api/origin/changelog` (what moved).
 
 Cite `operationId`s and `llms-full.txt` anchors. If this file and the fetched
 docs disagree, the docs win.
 
-## Rules GitHub habits get wrong
+## Where to look
 
-- **Check native or mirror before anything else.** Apps get full scopes only
-  on Origin-native repositories. A repository mirrored from GitHub returns
-  `403` on every write and never delivers `repository.pushed`. The ping
-  succeeds and then nothing else arrives.
-- **Only installation lifecycle events are delivered by default.** Select
-  every other event in app settings. An unselected event is silence, not an
-  error.
-- **Signature `v1ed` is Ed25519 over a SHA-256 digest of the raw body**, with
-  keys from Origin's JWKS. It matches Standard Webhooks except for the digest,
-  so off-the-shelf verifiers fail unmodified. Verify the raw body before
-  parsing. Reject `webhook-timestamp` more than five minutes off. Headers are
-  `webhook-*`, not `x-github-*`. After verification the body is authoritative.
-- **`deliveryId` is the idempotency key.** It is stable across retries.
-  `event.id` identifies the domain event. Return `2xx` after verification and
-  process asynchronously, because persistent failure pauses delivery for the
-  app.
-- **Payloads are lean snapshots** of the one object that changed, plus
-  references to its containers. No changed-file lists, before-SHAs, web URLs,
-  or inlined profiles. Follow up with the `Get…` for the object and count the
-  fan-out. The action is in the slug (`pull_request.review.submitted`). There
-  is no `action` field.
-- **The installation receipt JWT proves consent. It is never a Bearer token.**
-  Its `sub` is the installation ID.
-- **The app JWT is EdDSA over Ed25519, not RS256.** Register only the public
-  key.
-- **Installation tokens are short-lived. Mint them just in time** from the
-  app JWT and attenuate to the scopes and `repositoryIds` the job needs (IDs,
-  not slugs). Git over HTTPS uses Basic auth with user `x-access-token` and
-  the token as password. Bearer is REST only.
-- **Scopes come from the operations you call.** Request the union of their
-  `x-origin-scopes.scopes`. `write` implies `read`. `repository:metadata:read`
-  is automatic. `ambient: true` needs no request. Operations whose
-  `tokenTypes` is user-only (create app, add repositories to an installation,
-  mirror transitions) have no app-side path, and there is no `/user` analog.
-- **Page tokens are opaque and bound to the resource and filters.** Never
-  construct, parse, or reuse one across filter changes. Send `pageSize` on
-  every request, including continuations. There is no `Link` header and no
-  total.
-- **IDs are TypeIDs** (`repo_…`, `i_…`, `cmt_…`), never integers. Cache IDs,
-  not slugs. `/repos/_/{repoId}` survives renames. 64-bit integers (pull
-  request numbers, versions) are JSON strings. Defaults are present (`false`, `0`,
-  `[]`), so a present `false` is a value.
-- **`404` means not found or no access.** Branch on status and `code`, never
-  on message text. Quote `X-Request-ID` when escalating.
-- **The rate limit is a per-principal point budget.** Honor `Retry-After` on
-  `429`. Git HTTPS is metered separately. Cursor raises per-app budgets on
-  request.
-- **These are decisions, not gaps.** No commit statuses (check runs upsert on
-  a caller-stable `key`). No Issues (conversation is pull request comments, threads,
-  reviews, and labels). No GraphQL. No per-repository webhook CRUD. No user or
-  email directory. Reviews anchor to a pull request version, not a SHA. A
-  thread materializes from its first diff-anchored comment.
+| Question | Section of `llms-full.txt` |
+| --- | --- |
+| Which credential for which call; how to mint and how long it lives | `#authentication` through `#git-https-authentication` |
+| Install flow and the callback receipt | `#installation`, `#installation-receipt` |
+| Which scope an operation needs | `x-origin-scopes` on the operation; `#scopes` for the table and the rules |
+| What an installation can do on a mirrored repository | `#mirrored-repositories` |
+| Webhook headers, signature, envelope, retries, pausing, recovery | `#webhooks` and its subsections |
+| Which events exist and which are delivered without subscribing | `#events` |
+| Payload shapes | `#event-payloads` and the schema's `x-origin-webhook-events` |
+| Pagination, errors, request IDs, repository paths, ID form | `#common-conventions` |
+| Rate limits and headers | `#rate-limits` |
+| Check-run keys, attempts, stale writes | `#check-runs` |
+| What is not there yet | `#current-limitations` |
+| A checklist to build against | `#implementation-checklist` |
+
+## Rules to check first
+
+In priority order. Each is one line in the docs; getting it wrong costs a
+week.
+
+1. **Native or mirror.** Confirm the target repositories are Origin-native
+   or stable outbound mirrors before anything else. On any other mirror
+   state an installation can only read, and pushes are not delivered
+   (`#mirrored-repositories`, `#events`).
+2. **Subscribe.** Only the `installation.*` events arrive without a
+   subscription. Select every other event the app needs; a missing
+   subscription is silence, not an error (`#events`).
+3. **Verify, dedupe, acknowledge.** Verify the signature over the raw body
+   before parsing, dedupe on the delivery ID, return `2xx`, then process
+   (`#signature-verification`, `#retries`, `#automatic-disable`). The digest
+   step differs from the Standard Webhooks spec, so do not assume a generic
+   verifier passes.
+4. **Scopes from the spec.** Request the union of `x-origin-scopes.scopes`
+   over the operations the app calls, and nothing else (`#scopes`).
+
+## Coming from GitHub
+
+Origin does not have these. Build the Origin idiom instead of emulating the
+GitHub one. Until the docs carry this list, it lives here:
+
+- Issues. Conversation is pull request comments, threads, reviews, labels.
+- Commit statuses. Check runs with a stable `key` (`#check-runs`).
+- GraphQL. REST only.
+- Per-repository webhook CRUD. Subscriptions are app settings.
+- User, email, team, or member directory. Actors are IDs, plus a handle
+  where the payload exposes one.
+- `/user`-style flows. Discover repositories through the installation.
+- Reviews keyed by commit SHA. Reviews reference a pull request version.
+- Numeric IDs and page numbers. IDs and page tokens are opaque strings; do
+  not parse or construct them, and cache repository IDs rather than slugs
+  (`#repository-paths`, `#pagination`).

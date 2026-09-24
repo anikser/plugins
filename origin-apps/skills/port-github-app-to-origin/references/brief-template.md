@@ -109,24 +109,22 @@ fields read only for logging.
 
 ## 5. Hello-world path
 
-The shortest route to one real event from one native repository. Each step
-is a verification, linked to `llms-full.txt`. Append one step for each
-spec-silent behavior the brief depends on, stated as the observation to make.
+The shortest route to one real event from one native repository. The
+mechanics are in `llms-full.txt#implementation-checklist` and the sections it
+links; this list is the observations to make, in order. Append one step for
+each spec-silent behavior the brief depends on.
 
-1. Create the app, register the Ed25519 public key, and set the webhook URL
-   and callback.
-2. Select every repository event from § 3 in app settings.
-3. Install on an Origin-native repository. Verify the receipt JWT and read
-   the installation ID from `sub`.
-4. Mint an app JWT, exchange it for an installation token, and confirm the
-   repository is listed with the mirror state § 2 expects.
-5. Verify the ping (`v1ed` over the raw body, timestamp skew, `deliveryId`
-   dedupe).
-6. Perform the smallest action in § 3 and confirm the slug and the § 4
-   fields arrive. If the ping arrived and this did not, re-check steps 2 and
-   3 first.
-7. Smallest write from § 3 (check run with a stable `key`, pull request comment),
-   confirming its scope is in the grant.
+1. App created, signing key registered, webhook URL and callback set.
+2. Every repository event from § 3 selected in app settings.
+3. Installed on an Origin-native repository; receipt verified; installation
+   ID recorded.
+4. Installation token minted; the repository appears in the installation's
+   repositories with the mirror state § 2 expects.
+5. Ping received and verified; a retried delivery is deduplicated.
+6. Smallest action in § 3 performed; the expected slug and the § 4 fields
+   arrive. If the ping arrived and this did not, re-check steps 2 and 3
+   first.
+7. Smallest write from § 3 succeeds with the scopes from the § 3 line.
 
 ## 6. Gaps worth raising
 

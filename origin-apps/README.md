@@ -8,14 +8,12 @@ reads [Agent Skills](https://agentskills.io).
 
 ## What it includes
 
-`origin-api` is the general skill. It lists the sources to fetch first (the
-live OpenAPI spec and docs are the only source for endpoints, scopes, and
-event slugs) and then the Origin rules that GitHub habits get wrong. Native
-versus mirrored repositories. Opt-in webhook events. `v1ed` signatures.
-`deliveryId` idempotency. Lean payloads. Credential kinds and token minting.
-Scopes from `x-origin-scopes`. Opaque page tokens. TypeIDs. `404` semantics.
-Rate limits. The differences from GitHub that are decisions, not gaps. Use it
-for any Origin work.
+`origin-api` is the general skill. It sends the agent to the live OpenAPI
+spec and docs for every fact, gives a table of which docs section answers
+which question, and names the four rules to check first (native versus
+mirrored repositories, event subscriptions, webhook verification, scopes
+from the spec) plus the GitHub features Origin does not have. Use it for any
+Origin work.
 
 `port-github-app-to-origin` builds on `origin-api`. Run it inside your GitHub
 App's repository. It reads what the app uses from GitHub out of the code, maps
@@ -88,8 +86,8 @@ mkdir -p .cursor/skills && cp -r plugins/origin-apps/skills/* .cursor/skills/
 ## Where the brief goes
 
 The porting skill writes `ORIGIN-PORTING-BRIEF.md` at the repository root and
-prints its path. The gap cards in the brief are yours to send, through your
-shared Slack channel with Cursor if you have one, or to `hi@cursor.com`.
+prints its path. The gap cards in the brief are yours to send through
+whatever contact route you have with Cursor.
 
 ## License
 

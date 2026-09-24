@@ -5,28 +5,27 @@ table here. Build the index once. Every later step looks things up in it.
 
 ## Extensions the spec carries
 
-| Extension | Where | Meaning |
+| Extension | Where | Use |
 | --- | --- | --- |
-| `x-origin-scopes` | every operation | `scopes` the operation requires. `tokenTypes` it accepts (`app`, `installation`, `user`). `ambient: true` means there is nothing to request. |
-| `x-origin-webhook-events` | payload schemas | The slugs that deliver this payload shape. A schema carrying it is a webhook family. These slugs are the only authoritative event list. |
-| `x-origin-webhook-resource` | some payload schemas | The REST component the payload embeds. When absent, infer it from `$ref`s. Pushes, deletions, and reviewer requests are event-native with no REST twin. |
-| `x-cursor-visibility: PREVIEW` | some operations | Usable. The shape may move. Carry the badge into the brief as a `preview` suffix. |
+| `x-origin-scopes` | every operation | The scope, credential, and ambient rules for that operation. Rules in `llms-full.txt#scopes`. |
+| `x-origin-webhook-events` | payload schemas | The slugs that deliver this payload shape. A schema carrying it is a webhook family. Infer the embedded resource from its `$ref`s; some families (pushes, deletions, reviewer changes) have no REST twin. |
+| `x-cursor-visibility` | some schema fields | A stability badge on a field. Carry it into the brief as a `preview` suffix on rows that read the field. |
 
 ## Build the index
 
 1. **Operations and scopes**: `rg -B1 -A4 'x-origin-scopes:' openapi.yaml`
-   prints every `operationId` with its `scopes`, `tokenTypes`, and `ambient`
-   flag. From it, note the union of scopes with the operations that need
-   each, and separate installation-requestable scopes from ambient and
-   user-only ones. The user-only set tells you which GitHub flows have no
-   app-side equivalent. Read parameters and response components from the
-   spec when a rule below asks for them.
+   prints every `operationId` with its scope block. From it, note the union
+   of scopes with the operations that need each, and separate
+   installation-requestable scopes from ambient and user-only ones
+   (`llms-full.txt#scopes` explains the difference). The user-only set tells
+   you which GitHub flows have no app-side equivalent. Read parameters and
+   response components from the spec when a rule below asks for them.
 2. **Webhook events**: `rg -A3 'x-origin-webhook-events:' openapi.yaml` lists
    every slug with its payload schema. `scripts/index-origin-spec.py
    openapi.yaml` prints each payload family with its fields and `$ref`s
    resolved two levels deep; `schema <Name>` does the same for one component.
-   From `llms-full.txt` § Webhooks, note which slugs are app-lifecycle
-   (always delivered) versus repository events (must be selected).
+   From `llms-full.txt#events`, note which slugs are delivered without a
+   subscription and which must be selected.
 3. **Resources**: component schemas returned by `Get…`/`List…`, with field
    names, for "does the Origin object carry this field".
 
@@ -39,17 +38,17 @@ match is a candidate, never a result.
 
 **REST calls**
 
-1. Normalize the GitHub path to the same shape under `/v1/origin`
-   (`{owner}/{repo}` → `{ownerSlug}/{repoName}`, `{pull_number}` →
-   `{pullNumber}`; custom verbs are `:verb` suffixes such as
-   `…/contents:batchGet`).
-2. Re-home GitHub's issue-flavored pull request calls: `/issues/{n}/comments` and
-   `/issues/{n}/labels` used *on a pull request* live under `/pulls/{n}/…`.
-   That is a path change, not a gap. When the code uses them on real issues,
-   see `origin-isms.md`.
-3. Re-home `/app`, `/app/installations`, access-token minting, and
-   `/installation/repositories` under `/v1/origin/app…` and
-   `/v1/origin/installation/repos`; confirm `tokenTypes`. `/user`,
+1. Look for the same resource path under the Origin base path
+   (`llms-full.txt#repository-paths` gives the path shape). Most GitHub
+   repository, pull request, check, label, branch, and commit paths have a
+   direct or near-direct counterpart.
+2. Re-home GitHub's issue-flavored pull request calls (`/issues/{n}/comments`,
+   `/issues/{n}/labels` used *on a pull request*) to the pull request
+   endpoints. That is a path change, not a gap. When the code uses them on
+   real issues, see `origin-isms.md`.
+3. Re-home app and installation calls (`/app`, `/app/installations`,
+   access-token minting, `/installation/repositories`) to the Apps and
+   installations endpoints and confirm the credential each accepts. `/user`,
    `/user/installations`, `/orgs/…`, `/search/…`, and `/repositories/{id}`
    have no path counterpart. Consult `origin-isms.md` before labeling them.
 4. Compare parameters as well as paths. A matching path that lacks a filter
@@ -68,11 +67,10 @@ the operations the code calls and take the union of *their*
 (`statuses`, `issues`, `members`, `organization_*`, `pages`, `actions`,
 `workflows`, `deployments`) go through `origin-isms.md` first.
 
-**Events → slugs.** Each GitHub `event` + `action` pair becomes a candidate
-slug (`pull_request` plus `synchronize` becomes `pull_request.head_ref.pushed`).
-Confirm it exists in the webhook index. A candidate that does not exist is
-not an event on Origin. Check whether the state change is observable another
-way before classifying it.
+**Events → slugs.** Each GitHub `event` + `action` pair maps to at most one
+slug in `llms-full.txt#events`; the action is part of the slug. A pair with
+no slug is not an event on Origin. Check whether the state change is
+observable another way before classifying it.
 
 **Payload fields → schema properties.** For each field path a handler reads,
 walk the mapped slug's payload schema and record one of four outcomes.
