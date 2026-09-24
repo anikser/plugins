@@ -43,7 +43,6 @@ docs disagree, the docs win.
 | Pagination, errors, request IDs, repository paths | `#common-conventions` |
 | ID form and stability | `#ids` |
 | What a `PREVIEW` badge means | `#preview` |
-| GitHub features Origin does not have | `#coming-from-github` |
 | Rate limits and headers | `#rate-limits` |
 | Check-run keys, attempts, stale writes | `#check-runs` |
 | What is not there yet | `#current-limitations` |
@@ -73,6 +72,5 @@ week.
 
 ## Coming from GitHub
 
-GitHub habits do not carry over. Before mapping a GitHub feature onto Origin,
-read `#coming-from-github` for what Origin does not have and what to use
-instead.
+GitHub habits do not carry over. The `port-github-app-to-origin` skill in
+this plugin covers the differences.

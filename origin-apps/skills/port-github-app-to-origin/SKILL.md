@@ -44,9 +44,9 @@ GitHub. Follow it first. Nothing here repeats it. Two rules on top:
    find.
 3. **Map** each inventory row (`references/spec-mapping.md`, "Matching") and
    label it with the parity labels in the brief template. Map the webhook
-   payload fields the code reads, not only the event names. A field GitHub
-   inlines is often a follow-up read on Origin, so name the call for each
-   field. Then:
+   payload fields the code reads, not only the event names. If a payload
+   lacks a field the REST resource has, read the resource; see the per-field
+   notes under `#event-payloads`. Name the call for each such field. Then:
    - Check `origin-isms.md` before writing `gap`. Check `gap-bar.md` before
      writing any card.
    - A GitHub feature the Origin docs never mention (Marketplace billing,
