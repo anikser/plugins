@@ -9,8 +9,6 @@ description: >-
 license: MIT
 compatibility: >-
   Needs network access to https://cursor.com/docs/api/origin/* at run time.
-  The optional payload-field script needs python3 with PyYAML; without it,
-  read the spec directly.
 ---
 
 # Port a GitHub App to an Origin App
@@ -33,11 +31,11 @@ scopes, webhooks, paging, IDs, and errors. Follow it first. Nothing here repeats
 
 ## Procedure
 
-1. **Load the spec** (`origin-api`, "Fetch first"). Record `info.version` and
-   the fetch time for the brief's provenance. Build the mapping index per
-   `references/spec-mapping.md`: two `rg` commands for operations, scopes,
-   and slugs, and `scripts/index-origin-spec.py openapi.yaml` (needs PyYAML)
-   for webhook payload fields.
+1. **Load the spec** (`origin-api`, "Fetch first"). A brief needs broad
+   coverage, so fetch the full `openapi.yaml` and `llms-full.txt`; the
+   narrow lookup order in `origin-api` is for later single questions. Record
+   `info.version` and the fetch time for the brief's provenance. Build the
+   mapping index per `references/spec-mapping.md`.
 2. **Discover** per `references/discovery.md`. Record a file and line for
    every fact, including payload fields read only for logging and calls the
    framework makes on the app's behalf. Note what you looked for and did not
@@ -95,4 +93,3 @@ cards to Cursor. The brief carries them and the team decides.
 | `references/origin-isms.md` | Labeling a missing GitHub feature. |
 | `references/gap-bar.md` | Deciding whether a difference earns a card, and writing it. |
 | `references/brief-template.md` | Writing the output. |
-| `scripts/index-origin-spec.py` | Listing webhook payload families with their fields resolved. Optional. |

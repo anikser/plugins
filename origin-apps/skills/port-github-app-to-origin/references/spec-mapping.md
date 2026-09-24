@@ -21,13 +21,15 @@ table here. Build the index once. Every later step looks things up in it.
    you which GitHub flows have no app-side equivalent. Read parameters and
    response components from the spec when a rule below asks for them.
 2. **Webhook events**: `rg -A3 'x-origin-webhook-events:' openapi.yaml` lists
-   every slug with its payload schema. `scripts/index-origin-spec.py
-   openapi.yaml` prints each payload family with its fields and `$ref`s
-   resolved two levels deep; `schema <Name>` does the same for one component.
-   From `llms-full.txt#events`, note which slugs are delivered without a
-   subscription and which must be selected.
-3. **Resources**: component schemas returned by `Get…`/`List…`, with field
-   names, for "does the Origin object carry this field".
+   every slug with its payload schema. Each family's fields, with nested
+   objects expanded to dotted paths, are under its heading in
+   `llms-full.txt` (`rg -n '^### Pull Request Events$' llms-full.txt`, then
+   read to the next `###`). From `#events`, note which slugs are delivered
+   without a subscription and which must be selected.
+3. **Resources**: each endpoint's "Response Fields" in `llms-full.txt`
+   (`rg -n '^### Get Pull Request$' llms-full.txt`) lists the fields the
+   object carries, nested objects expanded, for "does the Origin object carry
+   this field".
 
 ## Matching
 
@@ -73,7 +75,8 @@ no slug is not an event on Origin. Check whether the state change is
 observable another way before classifying it.
 
 **Payload fields → schema properties.** For each field path a handler reads,
-walk the mapped slug's payload schema and record one of four outcomes.
+walk the mapped family's "Payload Fields" list in `llms-full.txt` and record
+one of four outcomes.
 Present at `<path>`. Follow-up read via `<operationId>` with identifiers the
 payload carries. Derivable from present fields, saying how and whether the
 format is contractual. Absent, which goes to the gap bar. A field on the REST

@@ -79,9 +79,6 @@ mkdir -p .cursor/skills && cp -r plugins/origin-apps/skills/* .cursor/skills/
 - For the porting skill, read access to the app's source. Producing the brief
   needs no Origin credentials. You follow the brief's hello-world path
   afterwards.
-- Optional: `python3` with PyYAML for the porting skill's
-  `scripts/index-origin-spec.py`, which prints webhook payload fields with
-  their references resolved. Without it the skill reads the spec directly.
 
 ## Where the brief goes
 

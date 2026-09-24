@@ -26,6 +26,11 @@ which rules to check first. It restates nothing you can read there.
 - `https://cursor.com/docs/api/origin/llms.txt` (index) and
   `https://cursor.com/docs/api/origin/changelog` (what moved).
 
+Lookup order: for one question, read `llms.txt` to find the section, then
+fetch only that section of `llms-full.txt` or the page it links. Fetch the
+whole `llms-full.txt` or `openapi.yaml` only when the task needs broad
+coverage, such as a porting brief.
+
 Cite `operationId`s and `llms-full.txt` anchors. If this file and the fetched
 docs disagree, the docs win.
 
