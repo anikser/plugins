@@ -42,24 +42,24 @@ section.
 2. **Discover** per `references/discovery.md`, including payload fields read
    only for logging and calls the framework makes on the app's behalf. Note
    what you looked for and did not find.
-3. **Map** each capability (`references/spec-mapping.md`) and label it with
-   the parity labels in the brief template. Map the payload fields the code
-   reads, not only the event names; if a payload lacks a field the REST
-   resource has, a follow-up read is the usual answer (`#event-payloads`).
-   Check `references/origin-isms.md` before labeling `gap`, and
-   `references/gap-bar.md` before writing feedback. A capability the Origin
-   docs do not mention is `unknown` with a question. A behavior the docs
-   neither confirm nor deny becomes a question plus a hello-world step that
-   observes it, rather than an assumption carried over from the app's
-   current platform.
-4. **Write the brief** from the template. Every Origin cell names an
-   `operationId`, a slug, or an `llms-full.txt` anchor. Sizes are S, M, or L,
-   not time.
-5. **Self-check** before finishing: every Origin cell resolves in the fetched
-   files; every `gap` row has a feedback entry that names a tradeoff from
-   `gap-bar.md`; every `not-available` and `unknown` row has a question; the
-   Feedback section contains nothing that reveals the team's internals; the
-   first question is native or mirror.
+3. **Map** each capability (`references/spec-mapping.md`). Map the payload
+   fields the code reads, not only the event names; if a payload lacks a
+   field the REST resource has, a follow-up read is the usual answer
+   (`#event-payloads`). Check `references/origin-isms.md` before calling
+   anything a gap, and `references/gap-bar.md` before writing feedback. A
+   capability the Origin docs do not mention is not available today and gets
+   a question. A behavior the docs neither confirm nor deny becomes a
+   question plus a first-run step that observes it, rather than an assumption
+   carried over from the app's current platform.
+4. **Write the brief** per `references/brief-template.md`: guidance and a
+   default outline, not a form. Every Origin claim names an `operationId`, a
+   slug, or an `llms-full.txt` anchor. When there is feedback, also write the
+   Feedback section to `ORIGIN-FEEDBACK.md` beside the brief.
+5. **Self-check** before finishing: every Origin claim resolves in the
+   fetched files; every gap has a feedback entry that names a tradeoff from
+   `gap-bar.md`; the Feedback section and `ORIGIN-FEEDBACK.md` contain nothing
+   that reveals the team's internals; the summary names the native-or-mirror
+   question.
 
 ## Not in scope
 
@@ -76,4 +76,4 @@ Cursor yourself; the brief carries it and the team sends it.
 | `references/spec-mapping.md` | Building the index. Matching calls, events, and fields. |
 | `references/origin-isms.md` | Labeling a capability that maps differently. |
 | `references/gap-bar.md` | Deciding what is feedback for Cursor, and writing the entry. |
-| `references/brief-template.md` | Writing the output. |
+| `references/brief-template.md` | Writing the brief and the feedback file. |

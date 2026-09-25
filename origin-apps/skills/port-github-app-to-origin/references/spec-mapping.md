@@ -9,7 +9,7 @@ table here. Build the index once. Every later step looks things up in it.
 | --- | --- | --- |
 | `x-origin-scopes` | every operation | The scope and credential rules for that operation. `llms-full.txt#scopes`, `#endpoint-reference`. |
 | `x-origin-webhook-events` | payload schemas | The slugs that deliver this payload shape; a schema carrying it is a webhook family. `#event-payloads`. Infer the embedded resource from its `$ref`s; some families have no REST twin. |
-| `x-cursor-visibility: PREVIEW` | operations, parameters, schemas, fields | `#preview`. Carry it into the brief as a `preview` suffix on any row that touches a badged element. |
+| `x-cursor-visibility: PREVIEW` | operations, parameters, schemas, fields | `#preview`. Note it in the brief on any capability that touches a badged element. |
 
 ## Build the index
 
@@ -54,7 +54,7 @@ match is a candidate, not a result.
    `/user/installations`, `/orgs/…`, `/search/…`, and `/repositories/{id}`
    have no path counterpart. Consult `origin-isms.md` before labeling them.
 4. Compare parameters as well as paths. A matching path that lacks a filter
-   the code depends on is `workaround` or `gap`, not `same`.
+   the code depends on is a workaround or a gap, not a straight match.
 5. Compare the response fields the code reads. Each missing field gets its
    own line as follow-up call, derivable, or absent. GitHub inlines web URLs,
    nested profiles, and counts that Origin does not.
@@ -86,10 +86,10 @@ event.
 
 ## Out of domain and spec-silent
 
-- A concept neither the spec nor `llms-full.txt` mentions is `unknown`
-  with an up-front question rather than `gap`: there is no Origin answer yet
+- A concept neither the spec nor `llms-full.txt` mentions is not available
+  today and gets a question rather than a gap: there is no Origin answer yet
   to compare against, and the question is how the team tells Cursor they
-  need it. Use `not-available` only for `origin-isms.md` rows.
+  need it.
 - A behavior the code depends on that the docs do not state (does an event
   fire for a draft pull request? does `updatedAt` move on a comment?) becomes an open
   question plus a hello-world step that observes it on a native repository.

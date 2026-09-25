@@ -1,41 +1,41 @@
 # Origin-isms: GitHub features that map differently on Origin
 
-Check here before labeling anything `gap`. Each row names the label to use
-and where the Origin answer lives today (an anchor in `llms-full.txt` unless
-noted). `reshaped` rows have a documented path, so they get a question if
-the team wants the GitHub shape back rather than a feedback entry.
-`not-available` rows get a question, and a feedback entry if they meet the
-bar.
-Read the source; do not copy this table into the brief.
+Check here before calling anything a gap. Each row says whether a documented
+Origin path exists (`maps`) or nothing in the current spec covers it
+(`not-available`), and where the Origin answer lives (an anchor in
+`llms-full.txt` unless noted). A `maps` row is a question only if the team
+wants the old shape back. A `not-available` row is a question, and feedback
+if it meets the bar in `gap-bar.md`. Read the source; do not copy this table
+into the brief.
 
-| GitHub call, event, or permission | Label | Where the Origin answer lives |
+| What the app uses today | Mark | Where the Origin answer lives |
 | --- | --- | --- |
-| Writes or `push` events on a repository mirrored from GitHub | `reshaped` | Read-only until the mirror becomes a stable outbound mirror (`#mirrored-repositories`); pushes are not delivered for GitHub-sourced mirrors (`#events`). Transitioning is a user-credential operation. First question of every brief. |
-| Install callback query parameters (`installation_id`, `setup_action`) | `reshaped` | `#installation-receipt` |
-| RS256 app JWT | `reshaped` | `#app-jwt` |
-| Long-lived installation tokens | `reshaped` | `#installation-access-token` |
+| Writes or `push` events on a repository mirrored from GitHub | `maps` | Read-only until the mirror becomes a stable outbound mirror (`#mirrored-repositories`); pushes are not delivered for GitHub-sourced mirrors (`#events`). Transitioning is a user-credential operation. First question of every brief. |
+| Install callback query parameters (`installation_id`, `setup_action`) | `maps` | `#installation-receipt` |
+| RS256 app JWT | `maps` | `#app-jwt` |
+| Long-lived installation tokens | `maps` | `#installation-access-token` |
 | User OAuth, `/user`, `/user/installations`, install-by-user picker | `not-available` | No user-credential flow for apps in the current spec. Repository discovery is through the installation; namespace-wide listing is under `#current-limitations`. Ask what the flow should do. |
-| Permissions `<noun>: read\|write` | `reshaped` | `#scopes`; `x-origin-scopes` per operation |
-| Numeric IDs, `/repositories/{id}` | `reshaped` | `#ids`, `#repository-paths` |
-| `Link` / `page` / `per_page` pagination, total counts | `reshaped` | `#pagination` |
+| Permissions `<noun>: read\|write` | `maps` | `#scopes`; `x-origin-scopes` per operation |
+| Numeric IDs, `/repositories/{id}` | `maps` | `#ids`, `#repository-paths` |
+| `Link` / `page` / `per_page` pagination, total counts | `maps` | `#pagination` |
 | GraphQL | `not-available` | No GraphQL endpoint in the current spec. Decompose into REST calls and count the fan-out; a decomposition that meets the feedback bar earns an entry about that read. |
-| Commit statuses (`statuses` permission, `POST /statuses/{sha}`) | `reshaped` | `#check-runs` (check runs with a stable `key`) |
+| Commit statuses (`statuses` permission, `POST /statuses/{sha}`) | `maps` | `#check-runs` (check runs with a stable `key`) |
 | Issues (`issues` permission, `issues.*` events, `/issues/{n}` not on a pull request) | `not-available` | No Issues endpoints or events in the current spec. Pull request comments, threads, reviews, and labels cover the pull-request half. Ask what the team needs for the rest; an issue-driven app may earn a feedback entry. |
-| `/issues/{n}/comments`, `/issues/{n}/labels` used on a pull request | `reshaped` | Pull requests endpoint reference; same calls under `/pulls/{n}/…` |
-| Repository webhook CRUD (`/repos/…/hooks`) | `reshaped` | Subscriptions are set per app through Create App / Update App `events` (`#events`). |
-| App-manifest conversion | `reshaped` | App creation form or `CreateApp` (`#installation`, endpoint reference) |
+| `/issues/{n}/comments`, `/issues/{n}/labels` used on a pull request | `maps` | Pull requests endpoint reference; same calls under `/pulls/{n}/…` |
+| Repository webhook CRUD (`/repos/…/hooks`) | `maps` | Subscriptions are set per app through Create App / Update App `events` (`#events`). |
+| App-manifest conversion | `maps` | App creation form or `CreateApp` (`#installation`, endpoint reference) |
 | OAuth-app token mints | `not-available` | Nothing in the current spec. Ask what the flow was for. |
-| Git Data API commit and ref writes | `reshaped` | Create Commit From Files, Create Git Ref (Git data endpoint reference); `#git-https-authentication` for pushes |
+| Git Data API commit and ref writes | `maps` | Create Commit From Files, Create Git Ref (Git data endpoint reference); `#git-https-authentication` for pushes |
 | Git Data API arbitrary blob or tree writes | `not-available` | Not in the current spec. Ask whether commit-from-files or a push covers the use. |
-| Standalone review-thread objects | `reshaped` | A thread comes from its first diff-anchored comment (Pull requests endpoint reference); thread listing is under `#current-limitations`. |
+| Standalone review-thread objects | `maps` | A thread comes from its first diff-anchored comment (Pull requests endpoint reference); thread listing is under `#current-limitations`. |
 | User, email, team, and member lookups | `not-available` | No directory reads in the current spec. Reviewer identifiers resolve by public id, user email, or group slug; `handle` is present when the profile is public (`#resource-references`). |
-| Single `pull_request` event with an `action` field, `previous_attributes` | `reshaped` | `#events`, `#event-payloads` |
-| `x-github-*` headers, HMAC `x-hub-signature-256` | `reshaped` | `#headers`, `#signature-verification` |
-| Payload inlines (changed files on push, before-SHA, `html_url`, `sender` profile) | `reshaped` | `#resource-references`; the push commit list is under `#current-limitations` and may change. Name the follow-up call per field and count the fan-out. |
-| All events delivered after app creation | `reshaped` | `#events` |
-| Reviews keyed by `commit_id` | `reshaped` | `pullRequestVersion` on the review schema |
-| Finding own check runs or comments by actor | `reshaped` | `#check-runs` (`key`); comments and reviews by a marker the app controls |
+| Single `pull_request` event with an `action` field, `previous_attributes` | `maps` | `#events`, `#event-payloads` |
+| `x-github-*` headers, HMAC `x-hub-signature-256` | `maps` | `#headers`, `#signature-verification` |
+| Payload inlines (changed files on push, before-SHA, `html_url`, `sender` profile) | `maps` | `#resource-references`; the push commit list is under `#current-limitations` and may change. Name the follow-up call per field and count the fan-out. |
+| All events delivered after app creation | `maps` | `#events` |
+| Reviews keyed by `commit_id` | `maps` | `pullRequestVersion` on the review schema |
+| Finding own check runs or comments by actor | `maps` | `#check-runs` (`key`); comments and reviews by a marker the app controls |
 | Requested-reviewer team pages, `created_via` | `not-available` | Groups exist and resolve by slug; there is no group membership read in the current spec. |
 
-A feature that is not on this list and that the Origin docs do not mention
-is `unknown` with a question.
+A capability that is not on this list and that the Origin docs do not
+mention is not available today; ask the team whether they need it.

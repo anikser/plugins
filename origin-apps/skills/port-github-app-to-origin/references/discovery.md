@@ -50,5 +50,5 @@ Seven facets. For each, what to record:
 
 When something is missing, say so in the inventory ("no manifest found
 (searched: …)", "no signature verification found in the receiver at …").
-Each missing item becomes an `unknown` row or an up-front question. Do not
+Each missing item becomes an up-front question. Do not
 fill it in with what an app of this kind usually does.

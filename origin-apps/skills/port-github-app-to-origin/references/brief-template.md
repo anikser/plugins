@@ -1,158 +1,79 @@
-# Porting brief template
+# The porting brief
 
-Contents: [Labels](#labels) (parity, size) and [Template](#template)
-(provenance, §§ 1-8).
+The brief is for the team that owns the app, plus one section they can send
+to Cursor as is. Write it as one Markdown file at the repository root
+(`ORIGIN-PORTING-BRIEF.md` unless the team's docs convention says otherwise)
+and print its path. A small app's brief fits on one screen; parts that have
+nothing to say collapse to a line or disappear. Choose table shapes and
+headings to fit the app.
 
-A default shape; adapt it to the app. Write one Markdown file at the
-repository root (`ORIGIN-PORTING-BRIEF.md` unless the team's docs convention
-says otherwise) and print its path. Cite spec `operationId`s and
-`llms-full.txt` anchors. Sections 1 to 5 and 7 are for the team and may cite
-their code by `file:line`. Section 6 is for Cursor and must not reveal the
-team's internals; its format is the part to keep exact.
+## What a good brief does
 
-## Labels
+- **Leads with a summary.** Three to five lines: the verdict (ports as is,
+  ports with N workarounds, blocked on X), the one question that decides the
+  rest (usually native or mirror), and whether there is feedback for Cursor
+  and if any of it blocks.
+- **Maps what the app uses to Origin.** Every capability the code relies on,
+  with the Origin operation, slug, or `llms-full.txt` anchor it maps to, or a
+  note that nothing does. Where a webhook handler reads specific payload
+  fields, say per field whether it is present, comes from the envelope, needs
+  a follow-up read (and how many per event), is derivable, or is absent.
+  Group by facet if the table is long. End with the scopes to request: the
+  union of `x-origin-scopes.scopes` over the operations named, minus what
+  `#scopes` says is automatic or implied.
+- **Gives an app-specific first-run path when it helps.** The events to
+  select by slug, the mirror-state check, the first event that should arrive
+  and what it should carry, the first write. Generic setup steps belong to
+  `llms-full.txt#implementation-checklist`, not here. Skip for a read-only app
+  with one event.
+- **Adds plan notes.** What drives the size of the port (a few bullets, no
+  time estimates) and how to roll it out: dual-run or cutover, what a mirror
+  trial can and cannot show, what to gate.
+- **Asks only what the team must decide.** Repository set, tolerable event
+  volume and follow-up reads, what replaces a flow that has no Origin
+  equivalent. Do not restate a row as a question.
+- **Ends with two lines of provenance.** Spec `info.version` and fetch time;
+  codebase and commit.
+- **Closes with Feedback for Cursor.** Last section, unnumbered, written to be
+  copied verbatim (`gap-bar.md` has the shape). Nothing in it reveals the
+  team's internals. When it has at least one entry, also write it to
+  `ORIGIN-FEEDBACK.md` beside the brief. When nothing meets the bar, no file;
+  one line in the brief saying so.
 
-**Parity**
+## What makes it trustworthy
 
-| Label | Meaning |
-| --- | --- |
-| `same` | Same capability, same shape. A path or field rename at most. |
-| `reshaped` | Same capability, different shape (pagination, identifier form, event granularity, key semantics). The code changes, the behavior does not. |
-| `workaround` | Same outcome by a different route (follow-up read, client-side filter, marker). The Tradeoff column is mandatory. |
-| `not-available` | Nothing in the current spec covers it (`origin-isms.md` or `#current-limitations`). Names the closest idiom and has a question in § 7; eligible for a feedback entry. |
-| `gap` | No workaround, or one whose tradeoff meets a test in `gap-bar.md`. Has a feedback entry in § 6. |
-| `unknown` | Discovery or the spec could not answer. Has a question in § 7. |
-| `preview` (suffix) | The row touches an element badged `x-cursor-visibility: PREVIEW` (`llms-full.txt#preview`). |
+- Every claim about the app cites evidence: `file:line`, or "from
+  `<dependency>` (documented behavior)". Team-facing sections only.
+- Every claim about Origin resolves in the fetched `openapi.yaml` or
+  `llms-full.txt`: an `operationId`, a slug, or an anchor. Nothing from
+  memory.
+- Behavior the docs do not state is a question plus a first-run step that
+  observes it, never an assumption.
+- Feedback for Cursor describes use cases and the API gap in Origin terms,
+  with no file paths, module names, framework internals, or repository names.
 
-**Size** (kind of change, not time)
+## Vocabulary, if you want one
 
-| Size | Meaning |
-| --- | --- |
-| S | Adapter or client layer. A path, header, identifier, or pagination rewrite, or a re-keyed lookup. |
-| M | A new code path. A follow-up read where the payload used to suffice, a handshake step, a new handler, a data-model change for a new identifier or version concept. |
-| L | A product or architecture change. A flow that depended on user OAuth, a customer-visible behavior, a dependency on native repositories, an open feedback entry. |
+Plain notes serve the reader as well as labels. If the table needs a compact
+mark, these four are shared with the other references: `maps` (a documented
+path exists, same or reshaped), `workaround` (same outcome by another route;
+say the tradeoff), `not-available` (nothing in the current spec; carries a
+question), `gap` (no workaround, or one whose tradeoff meets a test in
+`gap-bar.md`; produces a feedback entry). Size marks S/M/L, if used, mean
+adapter change, new code path, product or architecture change.
 
-## Template
+## Default outline
 
-```markdown
-# Origin porting brief for <app name>
+Adapt or skip parts; the Feedback section is the one to keep exact.
 
-Planning document. Maps what this app uses today onto the Cursor Origin API
-as published on <date>. It makes no decisions about language, framework, or
-client.
-
-## Provenance
-
-- Origin OpenAPI `info.version`: `<value>`, fetched <timestamp>
-- Docs read: <the URLs>
-- Codebase: `<repo>` at `<commit>`
-- Re-check `workaround` and `gap` rows against the changelog before work
-  starts. They are the rows most likely to have moved.
-
-## 1. What the app is today
-
-One paragraph on what it does for its users, which events drive it, and what
-it writes back. Then:
-
-| Facet | Finding | Evidence |
-| --- | --- | --- |
-| Manifest / declared permissions | … or "none checked in; derived from calls" | `file:line` |
-| Events handled | … | `file:line` |
-| REST call families | <count>, in § 3 | |
-| GraphQL | none / <count> documents, decomposed in § 3 | |
-| Auth flow | app JWT (<alg>) → installation token; user OAuth: <yes/no, for what> | `file:line` |
-| Webhook receiver | path, scheme, raw-body availability, dedupe | `file:line` |
-| Git as the app | clone / push / none | `file:line` |
-| Observed language and libraries | … | |
-| Looked for, not found | … | |
-
-## 2. First decision: which repositories
-
-<What the code assumes about the repositories it acts on.> What an
-installation can do on a mirrored repository is defined in
-`llms-full.txt#mirrored-repositories` and `#events`. Answer question 1 before
-attempting § 5.
-
-## 3. Capability table
-
-One row per capability the code uses today, grouped by facet (authentication,
-installation and discovery, configuration, repositories and contents, pull
-requests, reviews and comments, checks, webhook events, webhook receiver,
-git). Include rows for calls a dependency makes on the app's behalf, marked as
-such.
-
-| Capability today (evidence) | Origin equivalent | Parity | Size | Tradeoff | Open question |
-| --- | --- | --- | --- | --- | --- |
-| `GET /repos/{o}/{r}/pulls/{n}` (`src/x.ts:12`) | `<operationId>` | same | S | none | none |
-
-The Origin column names an `operationId`, a slug, a `llms-full.txt` anchor,
-or `none`. `workaround` rows fill Tradeoff. `gap` rows link their feedback entry.
-`not-available` rows name the closest idiom and their question. `unknown`
-rows name their question.
-
-**Scopes to request:** the union of `x-origin-scopes.scopes` across every
-Origin operation above that an installation token can call, minus the scopes
-`llms-full.txt#scopes` says are automatic or implied.
-
-## 4. Webhook payload fields the code reads
-
-| Event (today → Origin) | Field read today | Origin | How |
-| --- | --- | --- | --- |
-| `<event.action>` → `<slug>` | `<field path>` | present | `payload.pullRequest.head.sha` |
-| `<event>` → `<slug>` | `<field path>` | follow-up read | `<operationId>`, one call per ref update |
-
-"How" is one of five values. Present at `<path>`. Present in the envelope
-(`event.type` carries the action). Follow-up read via `<operationId>`,
-with the call count per event. Derivable, saying from what and whether the
-format is documented. Absent, pointing at the row's label in § 3. Include
-fields read only for logging.
-
-## 5. Hello-world path
-
-The shortest route to one real event from one native repository. The
-mechanics are in `llms-full.txt#implementation-checklist` and the sections it
-links; this list is the observations to make, in order. Append one step for
-each spec-silent behavior the brief depends on.
-
-1. App created, signing key registered, webhook URL and callback set.
-2. Every repository event from § 3 selected in app settings.
-3. Installed on an Origin-native repository; receipt verified; installation
-   ID recorded.
-4. Installation token minted; the repository appears in the installation's
-   repositories with the mirror state § 2 expects.
-5. Ping received and verified; a retried delivery is deduplicated.
-6. Smallest action in § 3 performed; the expected slug and the § 4 fields
-   arrive. If the ping arrived and this did not, re-check steps 2 and 3
-   first.
-7. Smallest write from § 3 succeeds with the scopes from the § 3 line.
-
-## 6. Feedback for Cursor
-
-Capabilities Origin should add, one entry per `gap` row in the `gap-bar.md`
-format: use case and API gap, in Origin terms, with nothing that reveals the
-team's internals. If none, write "No row met the feedback bar; the
-workarounds in § 3 carry their tradeoffs."
-
-## 7. Questions for the team
-
-Decisions the team must make before the port, not asks of Cursor. Always the
-first three, then what discovery left open.
-
-1. Native repositories (or stable outbound mirrors), or repositories in
-   another mirror state? Decides whether the app receives events and can
-   write.
-2. Which follow-up reads in § 4 are acceptable at your event volume, and
-   which payload fields are hard requirements?
-3. Which flows depend on a user credential today, and what should they do on
-   Origin?
-4. Does anything key approvals or reviews by commit SHA rather than pull
-   request version?
-5. How do you identify your own check runs, comments, and reviews today? Can
-   a key or marker you control replace actor matching?
-6. Do you generate clients from OpenAPI? (Read the changelog for renames.)
-
-## 8. Out of scope
-
-No implementation, no SDK or language choice, no time estimates. The brief is
-a map. The route is the team's.
+```text
+# Origin porting brief: <app>
+Summary
+1. The app today          one paragraph; observed stack; looked for, not found
+2. Capability map         table(s); payload fields under webhook events; scopes line
+3. First run              app-specific, five steps or fewer (optional)
+4. Plan notes             size drivers; rollout (optional)
+5. Questions for the team
+Provenance                two lines
+Feedback for Cursor       unnumbered, last, copy verbatim; also ORIGIN-FEEDBACK.md
 ```

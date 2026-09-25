@@ -17,7 +17,7 @@ tokens and IDs). Use it for any Origin work.
 inside the app's repository. It reads what the app uses out of the code, maps
 that onto the live Origin spec, and writes a porting brief: a capability
 table, the webhook fields your handlers read and where each comes from on
-Origin, the scopes to request, a hello-world path, feedback for Cursor, and
+Origin, the scopes to request, a first-run path, feedback for Cursor, and
 the questions your team should settle first. It plans; it writes no code
 unless you ask.
 
@@ -81,8 +81,9 @@ mkdir -p .cursor/skills && cp -r plugins/origin-apps/skills/* .cursor/skills/
 ## Where the brief goes
 
 The porting skill writes `ORIGIN-PORTING-BRIEF.md` at the repository root and
-prints its path. The Feedback for Cursor section is written to be sent as is;
-the rest of the brief is for your team.
+prints its path. When there is feedback for Cursor, it also writes that
+section to `ORIGIN-FEEDBACK.md`, ready to send as is; the rest of the brief
+is for your team.
 
 ## License
 

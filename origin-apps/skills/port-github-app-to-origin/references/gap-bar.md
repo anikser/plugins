@@ -7,13 +7,16 @@ for Cursor (a capability Origin should add) and questions for the team
 (decisions the team must make); it does not decide whether to speak up. It
 also orders feedback so the items that block the port are read first.
 
-- A difference is any row whose parity label is not `same`.
+- A difference is any capability whose Origin path is not a straight
+  substitution.
 - A workaround reaches the same outcome with the current API by another
   route: a follow-up read, a re-keyed identifier, a path change, a
-  client-side filter, a marker the app controls. A `workaround` row with its
-  tradeoff is often the right answer.
+  client-side filter, a marker the app controls. Noting the workaround with
+  its tradeoff is often the right answer.
 - A gap is a difference with no workaround, or a workaround whose tradeoff
-  meets one of the tests below. Gaps become feedback entries.
+  meets one of the tests below. Gaps become feedback entries; when there is
+  at least one, the Feedback section is also written to `ORIGIN-FEEDBACK.md`
+  beside the brief.
 
 ## Tradeoffs that make a workaround insufficient
 
@@ -27,14 +30,14 @@ also orders feedback so the items that block the port are read first.
 
 ## Usually a workaround or a question
 
-- Anything `origin-isms.md` labels `reshaped`: a documented path exists.
+- Anything `origin-isms.md` marks `maps`: a documented path exists.
 - A field or filter the code does not use.
 - A convention difference (pagination style, identifier form, URL fields)
   where the Origin convention is a mechanical substitution.
 - Anything the changelog says shipped or the spec already carries. Re-read
   the live spec before writing feedback.
-- A capability the Origin docs do not mention: `not-available` or `unknown`
-  with a question. The team should still ask if they need it.
+- A capability the Origin docs do not mention: not available today, with a
+  question. The team should still ask if they need it.
 - A query the app runs against a search API, when the spec has no search
   operation for that resource. A list operation with its filters plus a
   client-side predicate is the idiom; if that fails the fan-out test, the
@@ -48,8 +51,9 @@ about the event.
 
 ## The feedback format
 
-One entry per gap, in the brief's "Feedback for Cursor" section. Describe the
-use case and the API gap relative to it, in Origin terms. No file paths,
+One entry per gap, in the brief's "Feedback for Cursor" section. A suggested
+shape, not a form; keep whatever lines carry information. Describe the use
+case and the API gap relative to it, in Origin terms. No file paths,
 module names, framework internals, code structure, or repository names; those
 belong in the team-facing sections of the brief.
 
