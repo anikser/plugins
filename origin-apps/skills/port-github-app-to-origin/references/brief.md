@@ -3,21 +3,24 @@
 ## The brief
 
 One Markdown file at the repository root (`ORIGIN-PORTING-BRIEF.md` unless
-the team's convention says otherwise); print its path. A small app's brief
-fits on one screen; parts with nothing to say collapse or disappear. Choose
-table shapes to fit the app. A good brief:
+the team's convention says otherwise); print its path. Budget about 800
+words for a small app and about 2,000 for a large one; parts with nothing to
+say collapse or disappear. Choose table shapes to fit the app. A good brief:
 
 - leads with a summary: the verdict (ports as is, ports with workarounds,
   blocked on X), the question that decides the rest (usually native or
   mirror), and whether there is feedback for Cursor and if any of it blocks;
-- maps every capability the code relies on to an Origin operation, slug, or
-  docs section, or notes that nothing does, with payload fields per event
-  where handlers read them, and ends with the scopes to request;
+- lists only the capabilities that do not map straight across, each with
+  the Origin operation, slug, or docs section it maps to or a note that
+  nothing does, and closes the list with one line naming the rest
+  ("maps directly: 14 operations, covered by the scopes line"); shows a
+  payload field only when it is absent or needs a follow-up read; ends with
+  the scopes to request;
 - gives an app-specific first-run path when it helps (events to select, the
   mirror check, the first event and what it carries, the first write); skips
   generic setup, which "Implementation checklist" covers;
-- notes what drives the size of the port and how to roll it out (dual-run or
-  cutover, what a mirror trial can show), without time estimates;
+- notes what drives the size of the port and how to roll it out (dual-run
+  or cutover), without time estimates;
 - asks only what the team must decide, never restating a row;
 - ends with two lines of provenance (spec `info.version` and fetch time;
   codebase and commit) and then Feedback for Cursor, last and unnumbered.
@@ -47,13 +50,21 @@ user credential where an installation token should do; a change to what the
 team's users see or can do; or a capability on the hello-world path or the
 team's core flow. A state change the app exists to react to, with no event
 and no other way to observe it, meets the bar. Something the docs never
-mention is not available today and gets a question; the team should still
-ask if they need it.
+mention is not available today and gets a question; it becomes feedback
+only if it blocks the core flow.
+
+Not feedback, only a question or a note: a field or filter the code does not
+use; a convention difference with a mechanical substitute; a documented
+design choice such as token lifetime or no GraphQL.
 
 One entry per gap, in Origin terms, with nothing that reveals the team's
 internals. When there is at least one, also write the section to
 `ORIGIN-FEEDBACK.md` beside the brief; when there is none, no file and one
-line saying so. A suggested shape:
+line saying so. The file carries no license header, repository name,
+product name, or mention of another forge. A contradiction between the docs
+and observed behavior goes in a short "Docs questions for Cursor" list at
+the end of the feedback, not in the questions for the team. A suggested
+shape:
 
 ```markdown
 ### Feedback: <capability, in Origin terms>
@@ -85,13 +96,20 @@ HMAC → "Headers", "Signature verification"; inlined payload data (changed
 files, before-SHA, URLs, profiles) → follow-up reads ("Resource references",
 "Current limitations"); reviews keyed by commit SHA → `pullRequestVersion`;
 finding own rows by actor → check-run `key`, or a marker the app controls;
-writes on a repository mirrored from GitHub → read-only until it is a stable
-outbound mirror ("Mirrored repositories").
+writes on a repository mirrored from GitHub → metadata and contents reads
+only, until it is a stable outbound mirror, and merging and default-branch
+changes stay native-only ("Mirrored repositories"); user sign-in and acting
+as a user → "Acting on behalf of users" (user confirmation receipt,
+installation user tokens).
 
-Not available in the current spec (question, and feedback if it meets the
-bar): user OAuth and `/user` flows (discover repositories through the
-installation); GraphQL (decompose); Issues (pull request comments, threads,
+Not available in the current spec (question, and feedback if it blocks the
+core flow): GraphQL (decompose); Issues (pull request comments, threads,
 reviews, and labels cover the pull-request half); OAuth-app token mints;
-arbitrary blob or tree writes (commit-from-files and pushes exist);
-user, email, team, and member directory reads (reviewer identifiers resolve
-by public id, email, or group slug); group membership reads.
+arbitrary blob or tree writes (commit-from-files and pushes exist); user,
+email, team, and member directory reads (reviewer identifiers resolve by
+public id, email, or group slug); group membership and effective-permission
+reads. For the last two, the workaround to name is a user token capped to a
+repository and scopes: minting it returns `403` unless the user holds that
+permission, so it doubles as a permission probe.
+
+Crib rows go stale; the fetched docs win.

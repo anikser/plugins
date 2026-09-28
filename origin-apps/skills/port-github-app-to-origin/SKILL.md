@@ -38,7 +38,7 @@ Record a `file:line` for each, and note what you looked for and did not find.
   response fields read, whether each runs per webhook or in a loop, and the
   pagination style in use.
 - Authentication: JWT algorithm, how the installation is identified after
-  install, token lifetime handling, any user OAuth and what it is for,
+  install, token lifetime handling, any user sign-in and what it is for,
   whether the app clones or pushes git.
 - Webhook receiver: signature scheme, whether the raw body is available at
   verification time, how deliveries are deduplicated.

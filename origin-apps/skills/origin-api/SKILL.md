@@ -44,10 +44,13 @@ such as a porting brief. Cite `operationId`s and section names.
 
 ## Rules to check first
 
-1. **Native or mirror.** Confirm the target repositories are Origin-native
-   or stable outbound mirrors; on any other mirror state an installation can
-   only read, and pushes are not delivered ("Mirrored repositories",
-   "Events").
+1. **Native or mirror.** An installation keeps its full scopes only on
+   native repositories and stable outbound mirrors, and some writes are
+   native-only (merging a pull request, changing the default branch); read
+   each operation's description for mirror limits. On a GitHub-sourced
+   mirror, every event except `repository.pushed` still arrives, and every
+   call beyond metadata and contents reads returns `403` ("Mirrored
+   repositories", "Events").
 2. **Subscribe.** Only `installation.*` events arrive without a subscription;
    a missing subscription is silence, not an error ("Events").
 3. **Verify, dedupe, acknowledge.** Verify the signature over the raw body
