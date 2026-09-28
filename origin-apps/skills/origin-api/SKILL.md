@@ -13,28 +13,17 @@ compatibility: >-
 
 # Origin API
 
-The docs are the source of truth. This skill says where to look and which
-rules to check first; it does not restate the docs.
+The docs are the source of truth. Do not name an endpoint, scope, event slug,
+header, or limit from memory. Where this file and the docs disagree, the docs
+win.
 
-## Fetch first
-
-Do not name an endpoint, scope, event slug, header, or limit from memory.
-
-The docs live under `https://cursor.com/docs/api/origin/`:
-
-- `llms.txt`: the index. It links every section, endpoint, and webhook
-  payload page. Quoted names below ("Scopes", "Events") are section headings;
-  find the current link for one in `llms.txt`.
-- `openapi.yaml`: the contract. Its `x-origin-*` extensions are summarized in
-  "Endpoint reference".
-- `llms-full.txt`: the whole reference in one file. `changelog`: what moved.
-
-For one question, read `llms.txt`, then fetch only the section that answers
-it. Fetch the whole `llms-full.txt` or `openapi.yaml` for broad work, such as
-a porting brief.
-
-Cite `operationId`s and section names. Where this file and the docs
-disagree, the docs win.
+Under `https://cursor.com/docs/api/origin/`: `llms.txt` is the index and
+links every section, endpoint, and webhook payload; `openapi.yaml` is the
+contract (its `x-origin-*` extensions are summarized in "Endpoint
+reference"); `llms-full.txt` is the whole reference in one file; `changelog`
+says what moved. For one question, read `llms.txt` and fetch only the section
+that answers it. Fetch `llms-full.txt` or `openapi.yaml` whole for broad work
+such as a porting brief. Cite `operationId`s and section names.
 
 ## Where to look
 
@@ -47,9 +36,7 @@ disagree, the docs win.
 | Webhook headers, signature, envelope, retries, pausing, recovery | "Webhooks" |
 | Which events exist and which arrive without subscribing | "Events" |
 | Payload shapes | "Event payloads" |
-| Pagination, errors, request IDs, repository paths | "Common conventions" |
-| ID form and stability | "IDs" |
-| What a `PREVIEW` badge means | "Preview" |
+| Pagination, errors, request IDs, repository paths, IDs | "Common conventions" |
 | Rate limits | "Rate limits" |
 | Check-run keys, attempts, stale writes | "Check runs" |
 | What is not there yet | "Current limitations" |
@@ -58,20 +45,20 @@ disagree, the docs win.
 ## Rules to check first
 
 1. **Native or mirror.** Confirm the target repositories are Origin-native
-   or stable outbound mirrors. On any other mirror state an installation can
+   or stable outbound mirrors; on any other mirror state an installation can
    only read, and pushes are not delivered ("Mirrored repositories",
    "Events").
-2. **Subscribe.** Only the `installation.*` events arrive without a
-   subscription; a missing subscription is silence, not an error ("Events").
+2. **Subscribe.** Only `installation.*` events arrive without a subscription;
+   a missing subscription is silence, not an error ("Events").
 3. **Verify, dedupe, acknowledge.** Verify the signature over the raw body
    before parsing, dedupe on the delivery ID, return `2xx`, then process
    ("Signature verification", "Retries", "Automatic disable"). The digest
-   step differs from the Standard Webhooks spec; do not assume a generic
-   verifier passes.
+   step differs from Standard Webhooks; do not assume a generic verifier
+   passes.
 4. **Scopes from the spec.** Request the union of `x-origin-scopes.scopes`
    over the operations the app calls ("Scopes").
 5. **Opaque tokens and IDs.** Do not build or parse page tokens or IDs
    ("Pagination", "IDs").
 
-Porting an existing GitHub App: the `port-github-app-to-origin` skill in
-this plugin covers how its capabilities map onto Origin.
+Porting an existing GitHub App: use `port-github-app-to-origin` in this
+plugin.

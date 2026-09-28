@@ -13,68 +13,73 @@ compatibility: >-
 
 # Port a GitHub App to an Origin App
 
-Run inside the app's codebase. The output is a porting brief
-(`references/brief-template.md`): what maps, what changes shape, what is not
-available today, and what to tell Cursor. This skill plans; it does not write
-or change code unless the user explicitly asks for that after reading the
-brief.
+Run inside the app's codebase. The output is a porting brief for the team plus
+a Feedback for Cursor section they can send as is (`references/brief.md`).
+This skill plans; it does not write or change code unless the user explicitly
+asks after reading the brief. Follow the `origin-api` skill for the docs and
+the rules to check first. Two rules on top:
 
-The `origin-api` skill in this plugin covers the docs and the rules to check
-first; follow it. Two rules on top:
-
-1. **Discover, do not ask.** Read permissions, events, handlers, calls, token
-   minting, and the receiver out of the code. Anything you cannot find becomes
-   an open question.
+1. **Discover, do not ask.** Read what the app uses out of the code. Anything
+   you cannot find becomes an open question.
 2. **Feedback describes use cases, not the team's code.** Team-facing parts of
-   the brief may cite files and lines. The Feedback for Cursor section names
-   only what the app needs to do and what Origin lacks for it, in Origin
-   terms, with no file paths, module names, framework internals, or
-   repository names.
+   the brief may cite `file:line`. Feedback for Cursor names only what the
+   app needs to do and what Origin lacks for it, in Origin terms, with no file
+   paths, module names, framework internals, or repository names.
 
-## Suggested procedure
+## What to discover
 
-Adapt the steps to the app. The brief format matters most in its Feedback
-section.
+Record a `file:line` for each, and note what you looked for and did not find.
 
-1. **Load the spec.** A brief needs broad coverage, so fetch the full
-   `openapi.yaml` and `llms-full.txt` (see `origin-api` for URLs). Record
-   `info.version` and the fetch time for provenance. Build the index per
-   `references/spec-mapping.md`.
-2. **Discover** per `references/discovery.md`, including payload fields read
-   only for logging and calls the framework makes on the app's behalf. Note
-   what you looked for and did not find.
-3. **Map** each capability (`references/spec-mapping.md`). Map the payload
-   fields the code reads, not only the event names; if a payload lacks a
-   field the REST resource has, a follow-up read is the usual answer
-   ("Event payloads"). Check `references/origin-isms.md` before calling
-   anything a gap, and `references/gap-bar.md` before writing feedback. A
-   capability the Origin docs do not mention is not available today and gets
-   a question. A behavior the docs neither confirm nor deny becomes a
-   question plus a first-run step that observes it, rather than an assumption
-   carried over from the app's current platform.
-4. **Write the brief** per `references/brief-template.md`: guidance and a
-   default outline, not a form. Every Origin claim names an `operationId`, a
-   slug, or a docs section. When there is feedback, also write the
-   Feedback section to `ORIGIN-FEEDBACK.md` beside the brief.
-5. **Self-check** before finishing: every Origin claim resolves in the
-   fetched files; every gap has a feedback entry that names a tradeoff from
-   `gap-bar.md`; the Feedback section and `ORIGIN-FEEDBACK.md` contain nothing
-   that reveals the team's internals; the summary names the native-or-mirror
-   question.
+- Declared permissions and events (manifest or IaC, if checked in; otherwise
+  derive from the calls).
+- Webhook events handled, and every payload field each handler reads,
+  including fields used only for logging.
+- REST and GraphQL call families, with the parameters and filters passed, the
+  response fields read, whether each runs per webhook or in a loop, and the
+  pagination style in use.
+- Authentication: JWT algorithm, how the installation is identified after
+  install, token lifetime handling, any user OAuth and what it is for,
+  whether the app clones or pushes git.
+- Webhook receiver: signature scheme, whether the raw body is available at
+  verification time, how deliveries are deduplicated.
+- Calls a framework or helper library makes on the app's behalf (Probot's
+  receiver, token cache, and config loader; Octokit `App`'s installation and
+  repository listing; app-auth libraries). Read the dependency's docs and
+  list these as rows marked "from `<dependency>`".
 
-## Not in scope
+## How to map
 
-Writing or changing code without the user's explicit ask. Choosing a
-language, framework, or client. Estimating in time. Sending feedback to
-Cursor yourself; the brief carries it and the team sends it.
+Fetch `openapi.yaml` and `llms-full.txt` whole; a brief needs broad coverage.
+`rg -B1 -A4 'x-origin-scopes:' openapi.yaml` lists every operation with its
+scope block; `rg -A3 'x-origin-webhook-events:' openapi.yaml` lists every
+event slug with its payload schema. Each endpoint and each payload family has
+a docs section with its fields expanded to dotted paths.
 
-## Reference files
+- A name match is a candidate, not a result. Confirm by reading the
+  operation's description, parameters, and response fields against what the
+  code passes and reads. A missing parameter or field the code depends on is
+  a workaround or a gap, not a match.
+- GitHub's issue-flavored pull request calls (`/issues/{n}/comments`,
+  `/issues/{n}/labels` on a pull request) live under the pull request
+  endpoints. Used on real issues, see the crib in `references/brief.md`.
+- GraphQL has no counterpart; decompose each document into REST calls and
+  record the fan-out.
+- Scopes are the union of `x-origin-scopes.scopes` over the operations you
+  named, not a translation of the manifest.
+- Each event and action pair maps to at most one slug in "Events"; the action
+  is part of the slug. A pair with no slug is not an event on Origin.
+- For each payload field the code reads, record whether it is present, comes
+  from the envelope (`event.type` carries the action), needs a follow-up read
+  (say which operation and how many calls per event), is derivable, or is
+  absent. Payloads are snapshots; a field on the REST resource that the
+  payload lacks is a follow-up read.
+- A capability the docs do not mention is not available today and gets a
+  question. A behavior the docs neither confirm nor deny gets a question plus
+  a first-run step that observes it, not an assumption carried over from
+  GitHub.
 
-| File | Read when |
-| --- | --- |
-| `origin-api` skill (install both) | First. Docs pointers and the rules to check. |
-| `references/discovery.md` | Scanning the codebase. |
-| `references/spec-mapping.md` | Building the index. Matching calls, events, and fields. |
-| `references/origin-isms.md` | Labeling a capability that maps differently. |
-| `references/gap-bar.md` | Deciding what is feedback for Cursor, and writing the entry. |
-| `references/brief-template.md` | Writing the brief and the feedback file. |
+## Before finishing
+
+Every Origin claim resolves in the fetched files. Every gap has a feedback
+entry naming a tradeoff. The feedback contains nothing that reveals the
+team's internals. The summary names the native-or-mirror question.

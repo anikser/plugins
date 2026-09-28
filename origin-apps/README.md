@@ -25,18 +25,9 @@ Both skills fetch the spec at run time and never name an endpoint from memory.
 
 ## When to use
 
-- Writing or reviewing code that calls Origin, mints installation tokens, or
-  receives Origin webhooks: `origin-api`.
-- Creating an Origin App and wanting the rules to know up front:
-  `origin-api`.
-- Holding a GitHub App (Probot, Octokit, go-github, hand-rolled) and wanting
-  to know what an Origin App version looks like before starting:
-  `port-github-app-to-origin`.
-- Checking how a capability your app relies on today maps onto Origin:
-  `port-github-app-to-origin`.
-
-In Cursor, ask about the Origin API or ask to port the app, or run
-`/origin-api` or `/port-github-app-to-origin`.
+Ask about the Origin API, or ask to port a GitHub App, and the matching skill
+loads. In Cursor you can also run `/origin-api` or
+`/port-github-app-to-origin`.
 
 ## Install in Cursor
 
@@ -46,30 +37,11 @@ or open Customize, find the plugin, and install it at user or project scope.
 
 ## Use outside Cursor
 
-The skills use only the portable
-[Agent Skills](https://agentskills.io) frontmatter, so they work unchanged in
-other agents.
-
-Claude Code, via the marketplace manifest at this repository's root:
-
-```text
-/plugin marketplace add cursor/plugins
-/plugin install origin-apps@cursor-plugins
-```
-
-Any agent that reads Agent Skills (Claude Code, Codex, and others): copy the
-skill directories into the agent's skills folder. Copy both. The porting
-skill refers to `origin-api` for fundamentals.
-
-```bash
-git clone --depth 1 https://github.com/cursor/plugins.git
-# Claude Code
-mkdir -p .claude/skills && cp -r plugins/origin-apps/skills/* .claude/skills/
-# Codex
-mkdir -p .codex/skills && cp -r plugins/origin-apps/skills/* .codex/skills/
-# Cursor, without the marketplace
-mkdir -p .cursor/skills && cp -r plugins/origin-apps/skills/* .cursor/skills/
-```
+The skills use only portable [Agent Skills](https://agentskills.io)
+frontmatter. In Claude Code: `/plugin marketplace add cursor/plugins` then
+`/plugin install origin-apps@cursor-plugins`. Any other agent: copy
+`origin-apps/skills/*` into its skills folder (copy both; the porting skill
+refers to `origin-api`).
 
 ## Requirements
 
